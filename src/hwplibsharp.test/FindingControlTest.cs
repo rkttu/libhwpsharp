@@ -8,15 +8,9 @@ using HwpLib.Tool.ObjectFinder;
 
 namespace HwpLibSharp.Test;
 
-/// <summary>
-/// 컨트롤 찾기 테스트
-/// </summary>
 [TestClass]
 public class FindingControlTest
 {
-    /// <summary>
-    /// 첫 번째 셀의 문자열이 "A"로 시작하는 테이블을 찾는 필터
-    /// </summary>
     private class MyControlFilter : IControlFilter
     {
         public bool IsMatched(Control control, Paragraph paragraph, Section section)
@@ -38,7 +32,6 @@ public class FindingControlTest
     }
 
     [TestMethod]
-    [Ignore("테이블 컨트롤 Reader가 아직 구현되지 않았습니다.")]
     public void FindControl_WithFilter_ShouldSucceed()
     {
         // Arrange
@@ -73,9 +66,6 @@ public class FindingControlTest
         Console.WriteLine($"found {result.Count} tables.");
     }
 
-    /// <summary>
-    /// 모든 테이블을 찾는 필터
-    /// </summary>
     private class TableControlFilter : IControlFilter
     {
         public bool IsMatched(Control control, Paragraph paragraph, Section section)

@@ -8,7 +8,7 @@ using HwpLib.Reader.BodyText.Paragraph;
 namespace HwpLib.Reader.BodyText.Control;
 
 /// <summary>
-/// 문단 리스트를 읽는 객체 (캡션, 셀, 머리말/꼬리말, 각주/미주 등에서 사용)
+/// 문단 리스트를 읽는 객체 (캡션, 표, 머리글/꼬리글, 각주/미주 등등 등)
 /// </summary>
 public static class ForParagraphList
 {
@@ -21,6 +21,7 @@ public static class ForParagraphList
     {
         var fp = new ForParagraph();
         sr.ReadRecordHeader();
+        
         while (!sr.IsEndOfStream())
         {
             var para = pli.AddNewParagraph();
@@ -159,8 +160,7 @@ public class ForParagraph
         }
         if (_sr.CurrentRecordHeader?.TagId == HWPTag.ParaLineSeg)
         {
-            if (_paragraph!.LineSeg == null) _paragraph.CreateLineSeg();
-            ForParaLineSeg.Read(_paragraph.LineSeg!, _sr);
+            ForParaLineSeg.Read(_paragraph!, _sr);
         }
     }
 

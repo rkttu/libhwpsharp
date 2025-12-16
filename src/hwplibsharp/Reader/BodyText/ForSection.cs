@@ -144,11 +144,7 @@ public class ForSection
     private void ReadParaLineSeg()
     {
         if (_currentParagraph == null) return;
-        if (_currentParagraph.LineSeg == null)
-        {
-            _currentParagraph.CreateLineSeg();
-        }
-        ForParaLineSeg.Read(_currentParagraph.LineSeg!, _sr!);
+        ForParaLineSeg.Read(_currentParagraph, _sr!);
     }
 
     /// <summary>

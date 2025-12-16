@@ -53,7 +53,7 @@ public class ForGsoControl
         CtrlHeader();
         CaptionAndCtrlData();
 
-        uint gsoId = GsoIDFromShapeComponent();
+        long gsoId = GsoIDFromShapeComponent();
         _gsoControl = CreateGsoControl(gsoId);
         RestPartOfShapeComponent();
         RestPartOfControl();
@@ -79,9 +79,6 @@ public class ForGsoControl
         _sr!.ReadRecordHeader();
         while (_sr.CurrentRecordHeader?.TagId != HWPTag.ShapeComponent)
         {
-            if (_sr.IsEndOfStream())
-                break;
-                
             if (_sr.CurrentRecordHeader?.TagId == HWPTag.ListHeader)
             {
                 _caption = new Caption();
@@ -99,11 +96,6 @@ public class ForGsoControl
                     _sr.ReadRecordHeader();
                 }
             }
-            else
-            {
-                // Java 코드와 동일하게 - 알 수 없는 레코드는 건너뜀
-                break;
-            }
         }
     }
 
@@ -111,7 +103,7 @@ public class ForGsoControl
     /// 객체 공통 속성 레코드로부터 그리기 개체의 id를 읽는다.
     /// </summary>
     /// <returns>그리기 개체의 id</returns>
-    private uint GsoIDFromShapeComponent()
+    private long GsoIDFromShapeComponent()
     {
         if (!_sr!.IsImmediatelyAfterReadingHeader)
         {
@@ -119,7 +111,7 @@ public class ForGsoControl
         }
         if (_sr.CurrentRecordHeader?.TagId == HWPTag.ShapeComponent)
         {
-            uint id = _sr.ReadUInt4();
+            long id = _sr.ReadUInt4();
             _sr.Skip(4); // id2
             return id;
         }
@@ -134,9 +126,9 @@ public class ForGsoControl
     /// </summary>
     /// <param name="gsoId">그리기 개체 아이디</param>
     /// <returns>생성된 그리기 개체 컨트롤</returns>
-    private GsoControl CreateGsoControl(uint gsoId)
+    private GsoControl CreateGsoControl(long gsoId)
     {
-        var gc = _paragraph!.AddNewGsoControl(gsoId, _header!);
+        var gc = _paragraph!.AddNewGsoControl((uint)gsoId, _header!);
         gc.SetCaption(_caption);
         gc.SetCtrlData(_ctrlData);
         return gc;
@@ -190,9 +182,6 @@ public class ForGsoControl
             case GsoControlType.TextArt:
                 ForControlTextArt.ReadRest((ControlTextArt)_gsoControl, _sr!);
                 break;
-            default:
-                // Unknown type - skip remaining
-                break;
         }
     }
 
@@ -217,8 +206,8 @@ public class ForGsoControl
         _sr!.ReadRecordHeader();
         if (_sr.CurrentRecordHeader?.TagId == HWPTag.ShapeComponent)
         {
-            uint id = _sr.ReadUInt4();
-            _gsoControl = FactoryForControl.CreateGso(id, null!);
+            long id = _sr.ReadUInt4();
+            _gsoControl = FactoryForControl.CreateGso((uint)id, null!);
             ForShapeComponent.Read(_gsoControl!, _sr);
         }
         else
