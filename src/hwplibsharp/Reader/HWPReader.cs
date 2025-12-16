@@ -83,6 +83,33 @@ public class HWPReader : IDisposable
     }
 
     /// <summary>
+    /// URL에서 hwp 파일을 읽는다.
+    /// </summary>
+    /// <param name="url">hwp 파일의 URL</param>
+    /// <returns>HWPFile 객체</returns>
+    public static HWPFile FromUrl(string url)
+    {
+        using var httpClient = new HttpClient();
+        var bytes = httpClient.GetByteArrayAsync(url).GetAwaiter().GetResult();
+        using var stream = new MemoryStream(bytes);
+        return FromStream(stream);
+    }
+
+    /// <summary>
+    /// URL에서 hwp 파일을 비동기로 읽는다.
+    /// </summary>
+    /// <param name="url">hwp 파일의 URL</param>
+    /// <param name="cancellationToken">취소 토큰</param>
+    /// <returns>HWPFile 객체</returns>
+    public static async Task<HWPFile> FromUrlAsync(string url, CancellationToken cancellationToken = default)
+    {
+        using var httpClient = new HttpClient();
+        var bytes = await httpClient.GetByteArrayAsync(url, cancellationToken);
+        using var stream = new MemoryStream(bytes);
+        return FromStream(stream);
+    }
+
+    /// <summary>
     /// FileHeader 스트림을 읽는다.
     /// </summary>
     private void ReadFileHeader()
