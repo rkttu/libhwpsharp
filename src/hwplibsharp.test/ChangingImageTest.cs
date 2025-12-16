@@ -2,7 +2,7 @@ using HwpLib.Object;
 using HwpLib.Object.BinData;
 using HwpLib.Reader;
 using HwpLib.Writer;
-using System.Drawing;
+using SkiaSharp;
 
 namespace HwpLibSharp.Test;
 
@@ -38,9 +38,9 @@ public class ChangingImageTest
             using var img = LoadImage(ebd.Data);
             if (img != null)
             {
-                MakeGray(img);
+                using var grayImg = MakeGray(img);
                 
-                var changedFileBinary = MakeFileBinary(ebd.Name, img);
+                var changedFileBinary = MakeFileBinary(ebd.Name, grayImg);
                 if (changedFileBinary != null)
                 {
                     ebd.Data = changedFileBinary;
@@ -49,12 +49,11 @@ public class ChangingImageTest
         }
     }
 
-    private static Bitmap? LoadImage(byte[] data)
+    private static SKBitmap? LoadImage(byte[] data)
     {
         try
         {
-            using var ms = new MemoryStream(data);
-            return new Bitmap(ms);
+            return SKBitmap.Decode(data);
         }
         catch
         {
@@ -62,48 +61,43 @@ public class ChangingImageTest
         }
     }
 
-    private static void MakeGray(Bitmap img)
+    private static SKBitmap MakeGray(SKBitmap img)
     {
-        for (int x = 0; x < img.Width; ++x)
-        {
-            for (int y = 0; y < img.Height; ++y)
-            {
-                var pixel = img.GetPixel(x, y);
-                int r = pixel.R;
-                int g = pixel.G;
-                int b = pixel.B;
-
-                // Normalize and gamma correct:
-                float rr = (float)Math.Pow(r / 255.0, 2.2);
-                float gg = (float)Math.Pow(g / 255.0, 2.2);
-                float bb = (float)Math.Pow(b / 255.0, 2.2);
-
-                // Calculate luminance:
-                float lum = (float)(0.2126 * rr + 0.7152 * gg + 0.0722 * bb);
-
-                // Gamma compand and rescale to byte range:
-                int grayLevel = (int)(255.0 * Math.Pow(lum, 1.0 / 2.2));
-                img.SetPixel(x, y, Color.FromArgb(grayLevel, grayLevel, grayLevel));
-            }
-        }
+        var grayBitmap = new SKBitmap(img.Width, img.Height);
+        
+        using var canvas = new SKCanvas(grayBitmap);
+        using var paint = new SKPaint();
+        
+        paint.ColorFilter = SKColorFilter.CreateColorMatrix(
+        [
+            0.2126f, 0.7152f, 0.0722f, 0, 0,
+            0.2126f, 0.7152f, 0.0722f, 0, 0,
+            0.2126f, 0.7152f, 0.0722f, 0, 0,
+            0,       0,       0,       1, 0
+        ]);
+        
+        canvas.DrawBitmap(img, 0, 0, paint);
+        return grayBitmap;
     }
 
-    private static byte[]? MakeFileBinary(string name, Bitmap img)
+    private static byte[]? MakeFileBinary(string name, SKBitmap img)
     {
         var ext = GetExtension(name);
         if (ext == null) return null;
         
-        using var ms = new MemoryStream();
         var format = ext.ToLowerInvariant() switch
         {
-            "jpg" or "jpeg" => System.Drawing.Imaging.ImageFormat.Jpeg,
-            "png" => System.Drawing.Imaging.ImageFormat.Png,
-            "bmp" => System.Drawing.Imaging.ImageFormat.Bmp,
-            "gif" => System.Drawing.Imaging.ImageFormat.Gif,
-            _ => System.Drawing.Imaging.ImageFormat.Png
+            "jpg" or "jpeg" => SKEncodedImageFormat.Jpeg,
+            "png" => SKEncodedImageFormat.Png,
+            "bmp" => SKEncodedImageFormat.Bmp,
+            "gif" => SKEncodedImageFormat.Gif,
+            "webp" => SKEncodedImageFormat.Webp,
+            _ => SKEncodedImageFormat.Png
         };
-        img.Save(ms, format);
-        return ms.ToArray();
+        
+        using var image = SKImage.FromBitmap(img);
+        using var data = image.Encode(format, 90);
+        return data.ToArray();
     }
 
     private static string? GetExtension(string name)
