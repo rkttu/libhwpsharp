@@ -19,7 +19,7 @@ public class ControlPageOddEvenAdjust : Control
     /// 홀/짝수 조정(페이지 번호 제어) 컨트롤용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>홀/짝수 조정(페이지 번호 제어) 컨트롤 헤더</returns>
-    public CtrlHeaderPageOddEvenAdjust? GetHeader() => Header as CtrlHeaderPageOddEvenAdjust;
+    public new CtrlHeaderPageOddEvenAdjust? GetHeader() => Header as CtrlHeaderPageOddEvenAdjust;
 
     public override Control Clone()
     {

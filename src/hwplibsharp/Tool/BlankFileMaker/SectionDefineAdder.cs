@@ -17,7 +17,9 @@ public static class SectionDefineAdder
     /// <param name="paragraph">문단</param>
     public static void Add(Paragraph paragraph)
     {
-        var sectionDefine = (ControlSectionDefine)paragraph.AddNewControl(ControlType.SectionDefine);
+        var sectionDefine = paragraph.AddNewControl(ControlType.SectionDefine) as ControlSectionDefine;
+        if (sectionDefine == null) return;
+        
         Header(sectionDefine.Header);
         PageDef(sectionDefine.PageDef);
         FootNoteShape(sectionDefine.FootNoteShape);

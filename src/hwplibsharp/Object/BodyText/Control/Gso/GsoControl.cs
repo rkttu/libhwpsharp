@@ -41,7 +41,7 @@ public abstract class GsoControl : Control
     /// <summary>
     /// 그리기 개체를 위한 컨트롤 헤더 객체를 반환한다.
     /// </summary>
-    public CtrlHeaderGso? GetHeader()
+    public new CtrlHeaderGso? GetHeader()
     {
         return Header as CtrlHeaderGso;
     }

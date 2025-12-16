@@ -129,9 +129,9 @@ public class ForGsoControl
     private GsoControl CreateGsoControl(long gsoId)
     {
         var gc = _paragraph!.AddNewGsoControl((uint)gsoId, _header!);
-        gc.SetCaption(_caption);
-        gc.SetCtrlData(_ctrlData);
-        return gc;
+        gc?.SetCaption(_caption);
+        gc?.SetCtrlData(_ctrlData);
+        return gc!;
     }
 
     /// <summary>

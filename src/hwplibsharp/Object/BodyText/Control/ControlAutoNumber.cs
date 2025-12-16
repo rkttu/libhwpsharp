@@ -19,7 +19,7 @@ public class ControlAutoNumber : Control
     /// 자동번호 컨트롤용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>자동번호 컨트롤용 컨트롤 헤더</returns>
-    public CtrlHeaderAutoNumber? GetHeader() => Header as CtrlHeaderAutoNumber;
+    public new CtrlHeaderAutoNumber? GetHeader() => Header as CtrlHeaderAutoNumber;
 
     public override Control Clone()
     {

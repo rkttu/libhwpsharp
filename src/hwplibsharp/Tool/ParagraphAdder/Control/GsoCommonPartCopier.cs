@@ -13,9 +13,10 @@ namespace HwpLib.Tool.ParagraphAdder.Control
         public static void Copy(GsoControl source, GsoControl target, DocInfoAdder? docInfoAdder)
         {
             // in container == null
-            if (source.GetHeader() != null)
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
             {
-                target.GetHeader()?.Copy(source.GetHeader());
+                target.GetHeader()?.Copy(sourceHeader);
             }
 
             CtrlDataCopier.Copy(source, target, docInfoAdder);
@@ -25,7 +26,10 @@ namespace HwpLib.Tool.ParagraphAdder.Control
             {
                 var sourceComp = source.ShapeComponent as ShapeComponentContainer;
                 var targetComp = target.ShapeComponent as ShapeComponentContainer;
-                targetComp?.Copy(sourceComp);
+                if (sourceComp != null)
+                {
+                    targetComp?.Copy(sourceComp);
+                }
             }
             else
             {
@@ -80,13 +84,13 @@ namespace HwpLib.Tool.ParagraphAdder.Control
                 target.Type.Value = source.Type.Value;
             }
 
-            if (source.Type?.HasPatternFill == true)
+            if (source.Type?.HasPatternFill == true && source.PatternFill != null)
             {
                 target.CreatePatternFill();
                 target.PatternFill?.Copy(source.PatternFill);
             }
 
-            if (source.Type?.HasGradientFill == true)
+            if (source.Type?.HasGradientFill == true && source.GradientFill != null)
             {
                 target.CreateGradientFill();
                 target.GradientFill?.Copy(source.GradientFill);

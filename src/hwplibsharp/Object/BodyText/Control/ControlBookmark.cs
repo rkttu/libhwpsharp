@@ -19,7 +19,7 @@ public class ControlBookmark : Control
     /// 책갈피용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>책갈피용 컨트롤 헤더</returns>
-    public CtrlHeaderBookmark? GetHeader() => Header as CtrlHeaderBookmark;
+    public new CtrlHeaderBookmark? GetHeader() => Header as CtrlHeaderBookmark;
 
     public override Control Clone()
     {

@@ -13,7 +13,10 @@ namespace HwpLib.Tool.ParagraphAdder.Control
         {
             var sourceH = source.GetHeader();
             var targetH = target.GetHeader();
-            targetH?.Copy(sourceH);
+            if (sourceH != null)
+            {
+                targetH?.Copy(sourceH);
+            }
 
             CtrlDataCopier.Copy(source, target, docInfoAdder);
             CopyCaption(source, target, docInfoAdder);

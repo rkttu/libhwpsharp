@@ -21,7 +21,7 @@ public class ControlField : Control
     /// 필드용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>필드용 컨트롤 헤더</returns>
-    public CtrlHeaderField? GetHeader() => Header as CtrlHeaderField;
+    public new CtrlHeaderField? GetHeader() => Header as CtrlHeaderField;
 
     /// <summary>
     /// 필드 컨트롤의 이름을 반환한다.

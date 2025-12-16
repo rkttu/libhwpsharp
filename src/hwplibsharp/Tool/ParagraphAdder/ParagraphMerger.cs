@@ -167,63 +167,138 @@ namespace HwpLib.Tool.ParagraphAdder
             switch (sourceControl.Type)
             {
                 case ControlType.Table:
-                    TableCopier.Copy((ControlTable)sourceControl, (ControlTable)_target.AddNewControl(ControlType.Table), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Table) as ControlTable;
+                        if (targetControl != null)
+                            TableCopier.Copy((ControlTable)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Gso:
-                    GsoCopier.Copy((GsoControl)sourceControl, _target.AddNewGsoControl(((GsoControl)sourceControl).GsoType), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewGsoControl(((GsoControl)sourceControl).GsoType);
+                        if (targetControl != null)
+                            GsoCopier.Copy((GsoControl)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Equation:
-                    EquationCopier.Copy((ControlEquation)sourceControl, (ControlEquation)_target.AddNewControl(ControlType.Equation), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Equation) as ControlEquation;
+                        if (targetControl != null)
+                            EquationCopier.Copy((ControlEquation)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Header:
-                    ETCControlCopier.CopyHeader((ControlHeader)sourceControl, (ControlHeader)_target.AddNewControl(ControlType.Header), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Header) as ControlHeader;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyHeader((ControlHeader)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Footer:
-                    ETCControlCopier.CopyFooter((ControlFooter)sourceControl, (ControlFooter)_target.AddNewControl(ControlType.Footer), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Footer) as ControlFooter;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyFooter((ControlFooter)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Footnote:
-                    ETCControlCopier.CopyFootnote((ControlFootnote)sourceControl, (ControlFootnote)_target.AddNewControl(ControlType.Footnote), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Footnote) as ControlFootnote;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyFootnote((ControlFootnote)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Endnote:
-                    ETCControlCopier.CopyEndnote((ControlEndnote)sourceControl, (ControlEndnote)_target.AddNewControl(ControlType.Endnote), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Endnote) as ControlEndnote;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyEndnote((ControlEndnote)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.AutoNumber:
-                    ETCControlCopier.CopyAutoNumber((ControlAutoNumber)sourceControl, (ControlAutoNumber)_target.AddNewControl(ControlType.AutoNumber), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.AutoNumber) as ControlAutoNumber;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyAutoNumber((ControlAutoNumber)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.NewNumber:
-                    ETCControlCopier.CopyNewNumber((ControlNewNumber)sourceControl, (ControlNewNumber)_target.AddNewControl(ControlType.NewNumber), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.NewNumber) as ControlNewNumber;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyNewNumber((ControlNewNumber)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.PageHide:
-                    ETCControlCopier.CopyPageHide((ControlPageHide)sourceControl, (ControlPageHide)_target.AddNewControl(ControlType.PageHide), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.PageHide) as ControlPageHide;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyPageHide((ControlPageHide)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.PageOddEvenAdjust:
-                    ETCControlCopier.CopyPageOddEvenAdjust((ControlPageOddEvenAdjust)sourceControl, (ControlPageOddEvenAdjust)_target.AddNewControl(ControlType.PageOddEvenAdjust), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.PageOddEvenAdjust) as ControlPageOddEvenAdjust;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyPageOddEvenAdjust((ControlPageOddEvenAdjust)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.PageNumberPosition:
-                    ETCControlCopier.CopyPageNumberPosition((ControlPageNumberPosition)sourceControl, (ControlPageNumberPosition)_target.AddNewControl(ControlType.PageNumberPosition), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.PageNumberPosition) as ControlPageNumberPosition;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyPageNumberPosition((ControlPageNumberPosition)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.IndexMark:
-                    ETCControlCopier.CopyIndexMark((ControlIndexMark)sourceControl, (ControlIndexMark)_target.AddNewControl(ControlType.IndexMark), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.IndexMark) as ControlIndexMark;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyIndexMark((ControlIndexMark)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Bookmark:
-                    ETCControlCopier.CopyBookmark((ControlBookmark)sourceControl, (ControlBookmark)_target.AddNewControl(ControlType.Bookmark), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Bookmark) as ControlBookmark;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyBookmark((ControlBookmark)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.OverlappingLetter:
-                    OverlappingLetterCopier.Copy((ControlOverlappingLetter)sourceControl, (ControlOverlappingLetter)_target.AddNewControl(ControlType.OverlappingLetter), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.OverlappingLetter) as ControlOverlappingLetter;
+                        if (targetControl != null)
+                            OverlappingLetterCopier.Copy((ControlOverlappingLetter)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.AdditionalText:
-                    AdditionalTextCopier.Copy((ControlAdditionalText)sourceControl, (ControlAdditionalText)_target.AddNewControl(ControlType.AdditionalText), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.AdditionalText) as ControlAdditionalText;
+                        if (targetControl != null)
+                            AdditionalTextCopier.Copy((ControlAdditionalText)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.HiddenComment:
-                    ETCControlCopier.CopyHiddenComment((ControlHiddenComment)sourceControl, (ControlHiddenComment)_target.AddNewControl(ControlType.HiddenComment), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.HiddenComment) as ControlHiddenComment;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyHiddenComment((ControlHiddenComment)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 case ControlType.Form:
-                    ETCControlCopier.CopyForm((ControlForm)sourceControl, (ControlForm)_target.AddNewControl(ControlType.Form), _docInfoAdder);
+                    {
+                        var targetControl = _target.AddNewControl(ControlType.Form) as ControlForm;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyForm((ControlForm)sourceControl, targetControl, _docInfoAdder);
+                    }
                     break;
                 default:
                     if (sourceControl.IsField)
                     {
-                        ETCControlCopier.CopyField((ControlField)sourceControl, (ControlField)_target.AddNewControl(((ControlField)sourceControl).GetHeader()?.CtrlId ?? 0), _docInfoAdder);
+                        var sourceField = (ControlField)sourceControl;
+                        var targetControl = _target.AddNewControl(sourceField.GetHeader()?.CtrlId ?? 0) as ControlField;
+                        if (targetControl != null)
+                            ETCControlCopier.CopyField(sourceField, targetControl, _docInfoAdder);
                     }
                     break;
             }

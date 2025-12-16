@@ -19,7 +19,7 @@ public class ControlAdditionalText : Control
     /// 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>컨트롤 헤더</returns>
-    public CtrlHeaderAdditionalText? GetHeader() => Header as CtrlHeaderAdditionalText;
+    public new CtrlHeaderAdditionalText? GetHeader() => Header as CtrlHeaderAdditionalText;
 
     public override Control Clone()
     {

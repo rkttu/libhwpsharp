@@ -32,7 +32,7 @@ public class ControlEquation : Control
     /// 그리기 객체용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>그리기 객체용 컨트롤 헤더</returns>
-    public CtrlHeaderGso? GetHeader() => Header as CtrlHeaderGso;
+    public new CtrlHeaderGso? GetHeader() => Header as CtrlHeaderGso;
 
     /// <summary>
     /// 캡션 객체를 생성한다.

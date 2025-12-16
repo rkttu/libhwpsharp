@@ -16,8 +16,12 @@ public static class ColumnDefineAdder
     /// <param name="paragraph">문단</param>
     public static void Add(Paragraph paragraph)
     {
-        var columnDefine = (ControlColumnDefine)paragraph.AddNewControl(ControlType.ColumnDefine);
-        Header(columnDefine.GetHeader()!);
+        var columnDefine = paragraph.AddNewControl(ControlType.ColumnDefine) as ControlColumnDefine;
+        var header = columnDefine?.GetHeader();
+        if (header != null)
+        {
+            Header(header);
+        }
     }
 
     private static void Header(CtrlHeaderColumnDefine header)

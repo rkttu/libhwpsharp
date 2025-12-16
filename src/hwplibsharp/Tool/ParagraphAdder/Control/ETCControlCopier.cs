@@ -13,13 +13,21 @@ namespace HwpLib.Tool.ParagraphAdder.Control
     {
         public static void CopyAutoNumber(ControlAutoNumber source, ControlAutoNumber target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyColumnDefine(ControlColumnDefine source, ControlColumnDefine target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
@@ -33,16 +41,28 @@ namespace HwpLib.Tool.ParagraphAdder.Control
 
         public static void CopyField(ControlField source, ControlField target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
 
             if (IsMemo(source) && docInfoAdder != null)
             {
-                var sourceMemo = GetSourceMemo(source.GetHeader()!.MemoIndex, docInfoAdder);
-                if (sourceMemo != null)
+                var sourceFieldHeader = source.GetHeader();
+                if (sourceFieldHeader != null)
                 {
-                    long newMemoIndex = AddMemoToTarget(sourceMemo, docInfoAdder);
-                    SetNewMemoIndex(target.GetHeader()!, newMemoIndex);
+                    var sourceMemo = GetSourceMemo(sourceFieldHeader.MemoIndex, docInfoAdder);
+                    if (sourceMemo != null)
+                    {
+                        long newMemoIndex = AddMemoToTarget(sourceMemo, docInfoAdder);
+                        var targetFieldHeader = target.GetHeader();
+                        if (targetFieldHeader != null)
+                        {
+                            SetNewMemoIndex(targetFieldHeader, newMemoIndex);
+                        }
+                    }
                 }
             }
         }
@@ -90,7 +110,11 @@ namespace HwpLib.Tool.ParagraphAdder.Control
             var targetMemo = docInfoAdder.GetTargetHWPFile()?.BodyText?.AddNewMemo();
             if (targetMemo != null)
             {
-                targetMemo.MemoList?.Copy(clonedMemo.MemoList);
+                var clonedMemoList = clonedMemo.MemoList;
+                if (clonedMemoList != null)
+                {
+                    targetMemo.MemoList?.Copy(clonedMemoList);
+                }
                 ParagraphCopier.ListCopy(clonedMemo.ParagraphList, targetMemo.ParagraphList, docInfoAdder);
             }
             return maxMemoIndex;
@@ -139,43 +163,71 @@ namespace HwpLib.Tool.ParagraphAdder.Control
 
         public static void CopyIndexMark(ControlIndexMark source, ControlIndexMark target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyNewNumber(ControlNewNumber source, ControlNewNumber target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyPageHide(ControlPageHide source, ControlPageHide target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyPageNumberPosition(ControlPageNumberPosition source, ControlPageNumberPosition target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyPageOddEvenAdjust(ControlPageOddEvenAdjust source, ControlPageOddEvenAdjust target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyBookmark(ControlBookmark source, ControlBookmark target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
         }
 
         public static void CopyHiddenComment(ControlHiddenComment source, ControlHiddenComment target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
             target.ListHeader?.Copy(source.ListHeader);
             ParagraphCopier.ListCopy(source.ParagraphList, target.ParagraphList, docInfoAdder);
@@ -183,9 +235,17 @@ namespace HwpLib.Tool.ParagraphAdder.Control
 
         public static void CopyForm(ControlForm source, ControlForm target, DocInfoAdder? docInfoAdder)
         {
-            target.GetHeader()?.Copy(source.GetHeader());
+            var sourceHeader = source.GetHeader();
+            if (sourceHeader != null)
+            {
+                target.GetHeader()?.Copy(sourceHeader);
+            }
             CtrlDataCopier.Copy(source, target, docInfoAdder);
-            target.FormObject?.Copy(source.FormObject);
+            var sourceFormObject = source.FormObject;
+            if (sourceFormObject != null)
+            {
+                target.FormObject?.Copy(sourceFormObject);
+            }
         }
     }
 }

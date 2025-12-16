@@ -19,7 +19,7 @@ public class ControlIndexMark : Control
     /// 찾아보기 표식용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>찾아보기 표식용 컨트롤 헤더</returns>
-    public CtrlHeaderIndexMark? GetHeader() => Header as CtrlHeaderIndexMark;
+    public new CtrlHeaderIndexMark? GetHeader() => Header as CtrlHeaderIndexMark;
 
     public override Control Clone()
     {

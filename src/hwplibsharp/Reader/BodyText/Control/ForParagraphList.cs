@@ -224,7 +224,7 @@ public class ForParagraph
             return;
         }
         
-        // Form 컨트롤인 경우 (아직 구현되지 않음)
+        // Form 컨트롤인 경우 (현재 지원하지 않음)
         if (id == ControlType.Form.GetCtrlId())
         {
             SkipControlWithSubRecords();
@@ -233,7 +233,10 @@ public class ForParagraph
         
         // 다른 컨트롤은 ForControl을 통해 읽는다
         var c = _paragraph!.AddNewControl(id);
-        ForControl.Read(c, _sr);
+        if (c != null)
+        {
+            ForControl.Read(c, _sr);
+        }
     }
 
     /// <summary>

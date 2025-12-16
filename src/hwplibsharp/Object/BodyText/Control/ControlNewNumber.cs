@@ -19,7 +19,7 @@ public class ControlNewNumber : Control
     /// 새 번호 지정용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>새 번호 지정용 컨트롤 헤더</returns>
-    public CtrlHeaderNewNumber? GetHeader() => Header as CtrlHeaderNewNumber;
+    public new CtrlHeaderNewNumber? GetHeader() => Header as CtrlHeaderNewNumber;
 
     public override Control Clone()
     {

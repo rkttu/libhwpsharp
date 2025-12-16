@@ -19,7 +19,7 @@ public class ControlColumnDefine : Control
     /// 단 정의용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>단 정의용 컨트롤 헤더</returns>
-    public CtrlHeaderColumnDefine? GetHeader() => Header as CtrlHeaderColumnDefine;
+    public new CtrlHeaderColumnDefine? GetHeader() => Header as CtrlHeaderColumnDefine;
 
     public override Control Clone()
     {

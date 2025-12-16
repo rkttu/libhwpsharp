@@ -19,7 +19,7 @@ public class ControlPageHide : Control
     /// 감추기 컨트롤용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>감추기 컨트롤용 컨트롤 헤더</returns>
-    public CtrlHeaderPageHide? GetHeader() => Header as CtrlHeaderPageHide;
+    public new CtrlHeaderPageHide? GetHeader() => Header as CtrlHeaderPageHide;
 
     public override Control Clone()
     {

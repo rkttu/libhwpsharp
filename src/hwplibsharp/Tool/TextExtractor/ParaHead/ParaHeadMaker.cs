@@ -15,11 +15,11 @@ namespace HwpLib.Tool.TextExtractor.ParaHead
     /// </summary>
     public class ParaHeadMaker
     {
-        private HWPFile _hwpFile;
+        private readonly HWPFile _hwpFile;
         private ControlSectionDefine? _sectionDefine;
         private ParaNumber _paraNumberForNumbering;
         private ParaNumber? _paraNumberForOutline;
-        private NumberingInfo _defaultNumbering;
+        private NumberingInfo _defaultNumbering = new NumberingInfo();
 
         public ParaHeadMaker(HWPFile hwpFile)
         {
@@ -35,7 +35,6 @@ namespace HwpLib.Tool.TextExtractor.ParaHead
 
         private void MakeDefaultNumbering()
         {
-            _defaultNumbering = new NumberingInfo();
             _defaultNumbering.StartNumber = 0;
 
             var levelList = _defaultNumbering.LevelNumberingList;

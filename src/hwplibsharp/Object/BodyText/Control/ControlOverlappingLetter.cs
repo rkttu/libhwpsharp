@@ -19,7 +19,7 @@ public class ControlOverlappingLetter : Control
     /// 글자 겹침용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>글자 겹침용 컨트롤 헤더</returns>
-    public CtrlHeaderOverlappingLetter? GetHeader() => Header as CtrlHeaderOverlappingLetter;
+    public new CtrlHeaderOverlappingLetter? GetHeader() => Header as CtrlHeaderOverlappingLetter;
 
     public override Control Clone()
     {

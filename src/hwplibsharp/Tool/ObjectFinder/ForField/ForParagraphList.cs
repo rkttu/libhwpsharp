@@ -52,7 +52,7 @@ namespace HwpLib.Tool.ObjectFinder.ForField
         /// <param name="fieldType">필드 타입</param>
         /// <param name="fieldName">필드 이름</param>
         /// <returns>필드 텍스트</returns>
-        public static string GetFieldText(IParagraphList paraList, ControlType fieldType, string fieldName)
+        public static string? GetFieldText(IParagraphList paraList, ControlType fieldType, string fieldName)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -64,7 +64,9 @@ namespace HwpLib.Tool.ObjectFinder.ForField
             int paraCount = paraList.ParagraphCount;
             for (int paraIndex = 0; paraIndex < paraCount; paraIndex++)
             {
-                Para para = paraList.GetParagraph(paraIndex);
+                Para? para = paraList.GetParagraph(paraIndex);
+                if (para == null) continue;
+                
                 if (!findPosition.FindStartPosition)
                 {
                     FindStartPosition(para, fieldType, fieldName, findPosition, paraIndex);
@@ -220,7 +222,9 @@ namespace HwpLib.Tool.ObjectFinder.ForField
             int paraCount = paraList.ParagraphCount;
             for (int paraIndex = 0; paraIndex < paraCount; paraIndex++)
             {
-                Para para = paraList.GetParagraph(paraIndex);
+                Para? para = paraList.GetParagraph(paraIndex);
+                if (para == null) continue;
+                
                 if (!findPosition.FindStartPosition)
                 {
                     FindStartPosition(para, fieldType, fieldName, findPosition, paraIndex);

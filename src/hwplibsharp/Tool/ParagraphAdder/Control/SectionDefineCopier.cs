@@ -50,7 +50,10 @@ namespace HwpLib.Tool.ParagraphAdder.Control
 
         private static void CopyFootEndNoteShape(FootEndNoteShape? source, FootEndNoteShape? target)
         {
-            target?.Copy(source);
+            if (source != null)
+            {
+                target?.Copy(source);
+            }
         }
 
         private static void CopyPageBorderFill(PageBorderFill? source, PageBorderFill? target, DocInfoAdder? docInfoAdder)

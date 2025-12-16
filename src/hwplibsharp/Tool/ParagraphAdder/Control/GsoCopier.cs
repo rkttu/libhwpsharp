@@ -174,7 +174,10 @@ namespace HwpLib.Tool.ParagraphAdder.Control
             foreach (var sourceChild in source.ChildControlList)
             {
                 var targetChild = target.AddNewChildControl(sourceChild.GsoType);
-                Copy(sourceChild, targetChild, docInfoAdder);
+                if (targetChild != null)
+                {
+                    Copy(sourceChild, targetChild, docInfoAdder);
+                }
             }
         }
 

@@ -19,7 +19,7 @@ public class ControlPageNumberPosition : Control
     /// 쪽 번호 위치 컨트롤용 컨트롤 헤더를 반환한다.
     /// </summary>
     /// <returns>쪽 번호 위치 컨트롤용 컨트롤 헤더</returns>
-    public CtrlHeaderPageNumberPosition? GetHeader() => Header as CtrlHeaderPageNumberPosition;
+    public new CtrlHeaderPageNumberPosition? GetHeader() => Header as CtrlHeaderPageNumberPosition;
 
     public override Control Clone()
     {
