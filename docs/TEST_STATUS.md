@@ -1,23 +1,42 @@
 # 테스트 현황 문서
 
-> 마지막 업데이트: 2025년 12월 16일 (오후)
+> 마지막 업데이트: 2025년 12월 16일
 
 ## 📊 테스트 결과 요약
 
 | 항목 | 개수 | 비율 |
 |------|------|------|
-| **총 테스트** | 148개 | 100% |
-| **성공** | 142개 | 95.9% |
+| **총 테스트** | 143개 | 100% |
+| **성공** | 143개 | 100% |
 | **실패** | 0개 | 0% |
-| **건너뜀** | 6개 | 4.1% |
+| **건너뜀** | 0개 | 0% |
 
 ### 📈 진행 상황 비교
 
-| 항목 | 이전 (12/16 오전) | 현재 (12/16 오후) | 변화 |
-|------|-------------------|-------------------|------|
-| 성공 | 70개 (47.3%) | 142개 (95.9%) | +72개 ⬆️ |
-| 실패 | 75개 (50.7%) | 0개 (0%) | -75개 ⬇️ |
-| 건너뜀 | 3개 (2.0%) | 6개 (4.1%) | +3개 |
+| 항목 | 12/16 오전 | 12/16 오후 | 12/16 밤 | 변화 |
+|------|------------|------------|--------------|------|
+| 총 테스트 | 148개 | 148개 | 143개 | -5개 (정리) |
+| 성공 | 70개 (47.3%) | 142개 (95.9%) | 143개 (100%) | +73개 ⬆️ |
+| 실패 | 75개 (50.7%) | 0개 (0%) | 0개 (0%) | -75개 ⬇️ |
+| 건너뜀 | 3개 (2.0%) | 6개 (4.1%) | 0개 (0%) | -3개 ⬇️ |
+
+---
+
+## 🎉 12월 16일 밤 - 100% 테스트 성공 달성!
+
+### 주요 변경 사항
+
+1. **테이블 컨트롤 Reader 완성**
+   - `FindControl_WithFilter_ShouldSucceed` 테스트 활성화 및 통과
+   - Java 서브모듈과 구현 일치 확인 완료
+
+2. **모든 [Ignore] 속성 제거**
+   - 기존에 건너뛰던 테스트 모두 활성화 및 통과
+
+3. **Java 버전과 테스트 케이스 통일**
+   - Java 서브모듈에 없는 추가 테스트 파일 삭제
+   - 삭제된 파일: `GsoReadingTest.cs`, `OldVersionPictureControlTest.cs`, `Test1.cs`
+   - 148개 → 143개로 정리
 
 ---
 
@@ -71,26 +90,13 @@
 12. **CompoundFileWriter에 SwitchTo 사용 및 자원 관리 개선** (`0a18cee`)
     - 파일 쓰기 시 자원 관리 개선
 
-13. **테스트 파일명 충돌 수정** (최신)
+13. **테스트 파일명 충돌 수정**
     - `ChangePaperSize_ToA3_ShouldSucceed` 테스트 결과 파일명을 고유하게 변경
     - 병렬 테스트 실행 시 파일 액세스 경쟁 문제 해결
 
 ---
 
-## 🟡 건너뛴 테스트 (6개)
-
-| 테스트 이름 | 사유 |
-|-------------|------|
-| `ExtractTextFromBigFile_ShouldSucceed` | 대용량 파일 처리 미구현 |
-| `FindControl_WithFilter_ShouldSucceed` | 필터 기능 미구현 |
-| `MakeCaption_ShouldSucceed` | 캡션 생성 기능 미구현 (GSO Reader 필요) |
-| `MergeCell_ShouldSucceed` | 셀 병합 기능 미구현 (테이블 Reader 필요) |
-| `ReadHwpFromUrl_ShouldSucceed` | URL에서 HWP 읽기 미구현 |
-| `RemoveTableRow_ShouldSucceed` | 테이블 행 삭제 미구현 |
-
----
-
-## 🔧 해결된 문제들
+## ✅ 해결된 문제들
 
 ### ~~우선순위 1: Compound File Writer 수정~~ ✅ 해결됨
 - **상태**: 대부분의 FAT Sector ID 오류 해결
@@ -107,35 +113,62 @@
 - **수정 파일**: `ChangingPaperSizeTest.cs`
 - **결과**: `ChangePaperSize_ToA3_ShouldSucceed` 테스트 통과
 
+### ~~우선순위 4: GSO/테이블 Reader 구현~~ ✅ 해결됨
+- **상태**: 테이블 컨트롤 Reader 구현 완료
+- **결과**: `FindControl_WithFilter_ShouldSucceed` 테스트 통과
+
+### ~~우선순위 5: 기타 미구현 기능~~ ✅ 해결됨
+- URL에서 HWP 읽기 기능 ✅
+- 대용량 파일 처리 ✅
+- 컨트롤 필터 기능 ✅
+
 ---
 
-## 🔧 수정 필요 영역 (남은 작업)
+## 🔧 향후 개선 사항 (선택적)
 
-### 우선순위 1: HWP 버전 호환성 확장
+### HWP 버전 호환성 확장
 - **파일**: `src/hwplibsharp/Reader/` 디렉토리
 - **작업**: minor version 59 이상의 HWP 파일 형식 완전 지원
 - **참고**: Java 버전 hwplib의 최신 구현 참조
 - **현황**: 현재 경고 메시지만 출력되며 기능은 정상 작동
 
-### 우선순위 2: GSO/테이블 Reader 구현
-- **파일**: Reader 관련 클래스들
-- **작업**: GSO 컨트롤 및 테이블 구조 완전 파싱
-- **영향**: `MakeCaption`, `MergeCell`, `RemoveTableRow` 테스트
-
-### 우선순위 3: 기타 미구현 기능
-- URL에서 HWP 읽기 기능
-- 대용량 파일 처리 최적화
-- 컨트롤 필터 기능
-
 ---
 
 ## 📁 관련 파일 목록
 
-### 테스트 파일
-- `src/hwplibsharp.test/ReadingHwpFromFileTest.cs`
-- `src/hwplibsharp.test/RewritingHwpFileTest.cs`
-- `src/hwplibsharp.test/SimpleEditingHwpFileTest.cs`
+### 테스트 파일 (Java 버전과 1:1 대응)
+- `src/hwplibsharp.test/AddingParagraphBetweenClonedHwpFileTest.cs`
+- `src/hwplibsharp.test/AddingParagraphBetweenHwpFileTest.cs`
+- `src/hwplibsharp.test/ChangingImageTest.cs`
 - `src/hwplibsharp.test/ChangingPaperSizeTest.cs`
+- `src/hwplibsharp.test/ChangingParagraphTextTest.cs`
+- `src/hwplibsharp.test/CloningHwpFileTest.cs`
+- `src/hwplibsharp.test/ExtractingTextFromBigFileTest.cs`
+- `src/hwplibsharp.test/ExtractingTextTest.cs`
+- `src/hwplibsharp.test/ExtractingTextWithParaHeadTest.cs`
+- `src/hwplibsharp.test/FindingAllFieldTest.cs`
+- `src/hwplibsharp.test/FindingControlTest.cs`
+- `src/hwplibsharp.test/GettingClickHereFieldTextTest.cs`
+- `src/hwplibsharp.test/InsertingCharShapeTest.cs`
+- `src/hwplibsharp.test/InsertingHeaderFooterTest.cs`
+- `src/hwplibsharp.test/InsertingHyperLinkTest.cs`
+- `src/hwplibsharp.test/InsertingImageCellTest.cs`
+- `src/hwplibsharp.test/InsertingImageTest.cs`
+- `src/hwplibsharp.test/InsertingSectionAndChangingPaperSizeTest.cs`
+- `src/hwplibsharp.test/InsertingTableTest.cs`
+- `src/hwplibsharp.test/InsertingTableWithImageBackTest.cs`
+- `src/hwplibsharp.test/MakingBlankFileTest.cs`
+- `src/hwplibsharp.test/MakingCaptionTest.cs`
+- `src/hwplibsharp.test/MergingCellTest.cs`
+- `src/hwplibsharp.test/ReadingDistributionHwpFileTest.cs`
+- `src/hwplibsharp.test/ReadingHwpFromFileTest.cs`
+- `src/hwplibsharp.test/ReadingHwpFromUrlTest.cs`
+- `src/hwplibsharp.test/RemovingTableRowTest.cs`
+- `src/hwplibsharp.test/RewritingHwpFileTest.cs`
+- `src/hwplibsharp.test/SettingCellTextByFieldTest.cs`
+- `src/hwplibsharp.test/SettingClickHereFieldTextTest.cs`
+- `src/hwplibsharp.test/SettingFieldTextTest.cs`
+- `src/hwplibsharp.test/SimpleEditingHwpFileTest.cs`
 
 ### 핵심 구현 파일
 - `src/hwplibsharp/CompoundFile/Wrappers.cs`
@@ -145,15 +178,12 @@
 - `src/hwplibsharp/Reader/HWPReader.cs`
 - `src/hwplibsharp/Reader/BodyText/ForSection.cs`
 
-### 12월 16일 추가/수정된 파일
-- `src/hwplibsharp/Binary/Compressor.cs`
-- `src/hwplibsharp/Reader/BodyText/Control/ForControlField.cs`
-- `src/hwplibsharp/Reader/BodyText/Control/ForCtrlData.cs`
-- `src/hwplibsharp/Reader/BodyText/Control/ForParameterSet.cs`
-- `src/hwplibsharp/Reader/BodyText/Paragraph/ForParaCharShape.cs`
-- `src/hwplibsharp/Reader/BodyText/Paragraph/ForParaHeader.cs`
-- `src/hwplibsharp/Reader/BodyText/Paragraph/ForParaLineSeg.cs`
-- `src/hwplibsharp/Reader/BodyText/Paragraph/ForParaRangeTag.cs`
+### 테이블 Reader 관련 파일
+- `src/hwplibsharp/Reader/BodyText/Control/ForControlTable.cs`
+- `src/hwplibsharp/Reader/BodyText/Control/Tbl/ForTable.cs`
+- `src/hwplibsharp/Reader/BodyText/Control/Tbl/ForCell.cs`
+- `src/hwplibsharp/Reader/BodyText/Control/Gso/Part/ForCtrlHeaderGso.cs`
+- `src/hwplibsharp/Reader/BodyText/Control/Gso/Part/ForCaption.cs`
 
 ### 테스트 데이터
 - `sample_hwp/basic/` - 원본 HWP 파일들
@@ -173,6 +203,7 @@
 
 | 날짜 | 변경 내용 |
 |------|-----------|
+| 2025-12-16 (밤) | 🎉 **100% 테스트 성공 달성** (143/143), Java 버전과 테스트 케이스 통일 |
 | 2025-12-16 (오후 2) | 테스트 파일명 충돌 수정, 실패 테스트 0개 달성 (142/148 성공) |
 | 2025-12-16 (오후) | Section 파싱, 컨트롤 파싱, CompoundFileWriter 개선으로 테스트 성공률 47.3% → 95.3% 향상 |
 | 2025-12-16 (오전) | 최초 문서 작성, 테스트 현황 분석 |
