@@ -63,18 +63,21 @@ public class InsertingTableTest
     private void CreateTableControlAtFirstParagraph()
     {
         Section firstSection = _hwpFile!.BodyText.SectionList[0];
-        Paragraph firstParagraph = firstSection.GetParagraph(0);
+        Paragraph? firstParagraph = firstSection.GetParagraph(0);
+        if (firstParagraph?.Text == null) return;
 
         // 문단에서 표 컨트롤의 위치를 표현하기 위한 확장 문자를 넣는다.
         firstParagraph.Text.AddExtendCharForTable();
 
         // 문단에 표 컨트롤 추가한다.
-        _table = (ControlTable)firstParagraph.AddNewControl(ControlType.Table);
+        _table = (ControlTable?)firstParagraph.AddNewControl(ControlType.Table);
     }
 
     private void SetCtrlHeaderRecord()
     {
-        var ctrlHeader = _table!.Header;
+        if (_table == null) return;
+        
+        var ctrlHeader = _table.Header;
         ctrlHeader.Property.SetLikeWord(false);
         ctrlHeader.Property.SetApplyLineSpace(false);
         ctrlHeader.Property.SetVertRelTo(VertRelTo.Para);
@@ -102,7 +105,9 @@ public class InsertingTableTest
 
     private void SetTableRecordFor2By2Cells()
     {
-        var tableRecord = _table!.Table;
+        if (_table == null) return;
+        
+        var tableRecord = _table.Table;
         tableRecord.Property.DivideAtPageBoundary = DivideAtPageBoundary.DivideByCell;
         tableRecord.Property.AutoRepeatTitleRow = false;
         tableRecord.RowCount = 2;
@@ -143,7 +148,7 @@ public class InsertingTableTest
         bf.FillInfo.Type.HasPatternFill = true;
         bf.FillInfo.CreatePatternFill();
         var pf = bf.FillInfo.PatternFill;
-        pf.PatternType = PatternType.None;
+        pf!.PatternType = PatternType.None;
         pf.BackColor.Value = unchecked((uint)(-1));
         pf.PatternColor.Value = 0;
 
@@ -184,7 +189,7 @@ public class InsertingTableTest
         bf.FillInfo.Type.HasPatternFill = true;
         bf.FillInfo.CreatePatternFill();
         var pf = bf.FillInfo.PatternFill;
-        pf.PatternType = PatternType.None;
+        pf!.PatternType = PatternType.None;
         pf.BackColor.Value = unchecked((uint)(-1));
         pf.PatternColor.Value = 0;
 
@@ -193,21 +198,23 @@ public class InsertingTableTest
 
     private void AddFirstRow()
     {
-        _row = _table!.AddNewRow();
+        _row = _table?.AddNewRow();
         AddLeftTopCell();
         AddRightTopCell();
     }
 
     private void AddLeftTopCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(0, 0);
         SetParagraphForCell("왼쪽 위 셀");
     }
 
     private void SetListHeaderForCell(int colIndex, int rowIndex)
     {
-        var lh = _cell!.ListHeader;
+        if (_cell == null) return;
+        
+        var lh = _cell.ListHeader;
         lh.ParaCount = 1;
         lh.Property.TextDirection = TextDirection.Horizontal;
         lh.Property.LineChange = LineChange.Normal;
@@ -231,7 +238,9 @@ public class InsertingTableTest
 
     private void SetParagraphForCell(string text)
     {
-        var p = _cell!.ParagraphList.AddNewParagraph();
+        if (_cell == null) return;
+        
+        var p = _cell.ParagraphList.AddNewParagraph();
         SetParaHeader(p);
         SetParaText(p, text);
         SetParaCharShape(p);
@@ -259,7 +268,7 @@ public class InsertingTableTest
     {
         p.CreateText();
         var pt = p.Text;
-        pt.AddString(text);
+        pt?.AddString(text);
     }
 
     private static void SetParaCharShape(Paragraph p)
@@ -267,7 +276,7 @@ public class InsertingTableTest
         p.CreateCharShape();
 
         var pcs = p.CharShape;
-        pcs.AddParaCharShape(0, 1);
+        pcs?.AddParaCharShape(0, 1);
     }
 
     private static void SetParaLineSeg(Paragraph p)
@@ -275,7 +284,8 @@ public class InsertingTableTest
         p.CreateLineSeg();
 
         var pls = p.LineSeg;
-        var lsi = pls.AddNewLineSegItem();
+        var lsi = pls?.AddNewLineSegItem();
+        if (lsi == null) return;
 
         lsi.TextStartPosition = 0;
         lsi.LineVerticalPosition = 0;
@@ -291,28 +301,28 @@ public class InsertingTableTest
 
     private void AddRightTopCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(1, 0);
         SetParagraphForCell("오른쪽 위 셀");
     }
 
     private void AddSecondRow()
     {
-        _row = _table!.AddNewRow();
+        _row = _table?.AddNewRow();
         AddLeftBottomCell();
         AddRightBottomCell();
     }
 
     private void AddLeftBottomCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(0, 1);
         SetParagraphForCell("왼쪽 아래 셀");
     }
 
     private void AddRightBottomCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(1, 1);
         SetParagraphForCell("오른쪽 아래 셀");
     }

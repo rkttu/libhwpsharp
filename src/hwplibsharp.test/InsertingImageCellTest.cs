@@ -116,7 +116,9 @@ public class InsertingImageCellTest
         var cellList = CellFinder.FindAll(_hwpFile!, _fieldName);
         foreach (var c in cellList)
         {
-            Paragraph firstPara = c.ParagraphList.GetParagraph(0);
+            Paragraph? firstPara = c.ParagraphList.GetParagraph(0);
+            if (firstPara == null) continue;
+            
             var paraText = firstPara.Text;
             if (paraText == null)
             {
@@ -125,10 +127,10 @@ public class InsertingImageCellTest
             }
 
             // 문단에서 사각형 컨트롤의 위치를 표현하기 위한 확장 문자를 넣는다.
-            paraText.AddExtendCharForGSO();
+            paraText?.AddExtendCharForGSO();
 
             // 문단에 사각형 컨트롤 추가한다.
-            _rectangle = (ControlRectangle)firstPara.AddNewGsoControl(GsoControlType.Rectangle);
+            _rectangle = (ControlRectangle?)firstPara.AddNewGsoControl(GsoControlType.Rectangle);
             break;
         }
     }

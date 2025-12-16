@@ -103,18 +103,21 @@ public class InsertingTableWithImageBackTest
     private void CreateTableControlAtFirstParagraph()
     {
         Section firstSection = _hwpFile!.BodyText.SectionList[0];
-        Paragraph firstParagraph = firstSection.GetParagraph(0);
+        Paragraph? firstParagraph = firstSection.GetParagraph(0);
+        if (firstParagraph?.Text == null) return;
 
         // 문단에서 표 컨트롤의 위치를 표현하기 위한 확장 문자를 넣는다.
         firstParagraph.Text.AddExtendCharForTable();
 
         // 문단에 표 컨트롤 추가한다.
-        _table = (ControlTable)firstParagraph.AddNewControl(ControlType.Table);
+        _table = (ControlTable?)firstParagraph.AddNewControl(ControlType.Table);
     }
 
     private void SetCtrlHeaderRecord()
     {
-        var ctrlHeader = _table!.Header;
+        if (_table == null) return;
+        
+        var ctrlHeader = _table.Header;
         ctrlHeader.Property.SetLikeWord(false);
         ctrlHeader.Property.SetApplyLineSpace(false);
         ctrlHeader.Property.SetVertRelTo(VertRelTo.Para);
@@ -147,7 +150,9 @@ public class InsertingTableWithImageBackTest
 
     private void SetTableRecordFor2By2Cells()
     {
-        var tableRecord = _table!.Table;
+        if (_table == null) return;
+        
+        var tableRecord = _table.Table;
         tableRecord.Property.DivideAtPageBoundary = DivideAtPageBoundary.DivideByCell;
         tableRecord.Property.AutoRepeatTitleRow = false;
         tableRecord.RowCount = 2;
@@ -238,21 +243,23 @@ public class InsertingTableWithImageBackTest
 
     private void AddFirstRow()
     {
-        _row = _table!.AddNewRow();
+        _row = _table?.AddNewRow();
         AddLeftTopCell();
         AddRightTopCell();
     }
 
     private void AddLeftTopCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(0, 0, true);
         SetParagraphForCell();
     }
 
     private void SetListHeaderForCell(int colIndex, int rowIndex, bool insertImage)
     {
-        var lh = _cell!.ListHeader;
+        if (_cell == null) return;
+        
+        var lh = _cell.ListHeader;
         lh.ParaCount = 1;
         lh.Property.TextDirection = TextDirection.Horizontal;
         lh.Property.LineChange = LineChange.Normal;
@@ -315,7 +322,9 @@ public class InsertingTableWithImageBackTest
 
     private void SetParagraphForCell()
     {
-        var p = _cell!.ParagraphList.AddNewParagraph();
+        if (_cell == null) return;
+        
+        var p = _cell.ParagraphList.AddNewParagraph();
         SetParaHeader(p);
         SetParaCharShape(p);
         SetParaLineSeg(p);
@@ -327,7 +336,7 @@ public class InsertingTableWithImageBackTest
         ph.LastInList = true;
         // 셀의 문단 모양을 이미 만들어진 문단 모양으로 사용함
         ph.ParaShapeId = 1;
-        // 셀의 스타일을이미 만들어진 스타일으로 사용함
+        // 셀의 스타일을이미 만들어진 스타일로 사용함
         ph.StyleId = 1;
         ph.DivideSort.IsDivideSection = false;
         ph.DivideSort.IsDivideMultiColumn = false;
@@ -344,17 +353,18 @@ public class InsertingTableWithImageBackTest
     {
         p.CreateCharShape();
 
-        var pcs = p.CharShape!;
+        var pcs = p.CharShape;
         // 셀의 글자 모양을 이미 만들어진 글자 모양으로 사용함
-        pcs.AddParaCharShape(0, 1);
+        pcs?.AddParaCharShape(0, 1);
     }
 
     private void SetParaLineSeg(Paragraph p)
     {
         p.CreateLineSeg();
 
-        var pls = p.LineSeg!;
-        var lsi = pls.AddNewLineSegItem();
+        var pls = p.LineSeg;
+        var lsi = pls?.AddNewLineSegItem();
+        if (lsi == null) return;
 
         lsi.TextStartPosition = 0;
         lsi.LineVerticalPosition = 0;
@@ -375,28 +385,28 @@ public class InsertingTableWithImageBackTest
 
     private void AddRightTopCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(1, 0, false);
         SetParagraphForCell();
     }
 
     private void AddSecondRow()
     {
-        _row = _table!.AddNewRow();
+        _row = _table?.AddNewRow();
         AddLeftBottomCell();
         AddRightBottomCell();
     }
 
     private void AddLeftBottomCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(0, 1, false);
         SetParagraphForCell();
     }
 
     private void AddRightBottomCell()
     {
-        _cell = _row!.AddNewCell();
+        _cell = _row?.AddNewCell();
         SetListHeaderForCell(1, 1, false);
         SetParagraphForCell();
     }

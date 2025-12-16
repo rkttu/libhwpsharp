@@ -43,8 +43,10 @@ public class ChangingParagraphTextTest
         Assert.IsTrue(File.Exists(writePath), "문단 텍스트 변경 성공");
     }
 
-    private static void ChangeParagraphText(Paragraph paragraph)
+    private static void ChangeParagraphText(Paragraph? paragraph)
     {
+        if (paragraph?.Text == null) return;
+        
         var newCharList = GetNewCharList(paragraph.Text.CharList.ToList());
         ChangeNewCharList(paragraph, newCharList);
         RemoveLineSeg(paragraph);
@@ -139,6 +141,8 @@ public class ChangingParagraphTextTest
         paragraph.DeleteText();
         paragraph.CreateText();
         
+        if (paragraph.Text == null) return;
+        
         // 새 문자 리스트의 내용을 문자열로 변환하여 추가
         var sb = new System.Text.StringBuilder();
         foreach (var ch in newCharList)
@@ -163,6 +167,8 @@ public class ChangingParagraphTextTest
 
     private static void RemoveCharShapeExceptFirstOne(Paragraph paragraph)
     {
+        if (paragraph.CharShape == null) return;
+        
         int size = paragraph.CharShape.PositionShapeIdPairList.Count;
         if (size > 1)
         {

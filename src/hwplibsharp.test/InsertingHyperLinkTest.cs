@@ -35,15 +35,18 @@ public class InsertingHyperLinkTest
         Assert.IsTrue(File.Exists(writePath), "하이퍼링크 삽입 성공");
     }
 
-    private static void InsertHyperLink(Paragraph paragraph)
+    private static void InsertHyperLink(Paragraph? paragraph)
     {
+        if (paragraph?.Text == null) return;
+        
         paragraph.Text.AddString("이것은 ");
         paragraph.Text.AddExtendCharForHyperlinkStart();
         paragraph.Text.AddString("다음 사이트");
         paragraph.Text.AddExtendCharForHyperlinkEnd();
         paragraph.Text.AddString("로 가는 링크입니다.");
 
-        var field = (ControlField)paragraph.AddNewControl(ControlType.FIELD_HYPERLINK.GetCtrlId());
-        field.GetHeader()!.Command.FromUTF16LEString("https\\://www.dogfoot.kr/aaa.jsp\\?aaa=bb&ccc=dd" + ";1;0;0;");
+        var field = (ControlField?)paragraph.AddNewControl(ControlType.FIELD_HYPERLINK.GetCtrlId());
+        var header = field?.GetHeader();
+        header?.Command.FromUTF16LEString("https\\://www.dogfoot.kr/aaa.jsp\\?aaa=bb&ccc=dd" + ";1;0;0;");
     }
 }

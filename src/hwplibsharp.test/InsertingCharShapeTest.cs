@@ -142,6 +142,8 @@ public class InsertingCharShapeTest
     private void CreateTestParagraph()
     {
         var p = _hwpFile!.BodyText.SectionList[0].AddNewParagraph();
+        if (p == null) return;
+        
         SetParaHeader(p);
         SetParaText(p, "This is a Paragraph. Bold on. Bold off.");
         SetParaCharShape(p);
@@ -169,7 +171,7 @@ public class InsertingCharShapeTest
     {
         p.CreateText();
         var pt = p.Text;
-        pt.AddString(text);
+        pt?.AddString(text);
     }
 
     private void SetParaCharShape(Paragraph p)
@@ -181,9 +183,9 @@ public class InsertingCharShapeTest
         p.CreateCharShape();
 
         var pcs = p.CharShape;
-        pcs.AddParaCharShape(paragraphStartPos, _charShapeIndexForNormal);
-        pcs.AddParaCharShape(boldStartPos, _charShapeIndexForBold);
-        pcs.AddParaCharShape(boldEndPos, _charShapeIndexForNormal);
+        pcs?.AddParaCharShape(paragraphStartPos, _charShapeIndexForNormal);
+        pcs?.AddParaCharShape(boldStartPos, _charShapeIndexForBold);
+        pcs?.AddParaCharShape(boldEndPos, _charShapeIndexForNormal);
     }
 
     private static void SetParaLineSeg(Paragraph p)
@@ -191,7 +193,8 @@ public class InsertingCharShapeTest
         p.CreateLineSeg();
 
         var pls = p.LineSeg;
-        var lsi = pls.AddNewLineSegItem();
+        var lsi = pls?.AddNewLineSegItem();
+        if (lsi == null) return;
 
         lsi.TextStartPosition = 0;
         lsi.LineVerticalPosition = 0;

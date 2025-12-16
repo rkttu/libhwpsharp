@@ -105,13 +105,14 @@ public class InsertingImageTest
     private void CreateRectangleControlAtFirstParagraph()
     {
         Section firstSection = _hwpFile!.BodyText.SectionList[0];
-        Paragraph firstParagraph = firstSection.GetParagraph(0);
+        Paragraph? firstParagraph = firstSection.GetParagraph(0);
+        if (firstParagraph?.Text == null) return;
 
         // 문단에서 사각형 컨트롤의 위치를 표현하기 위한 확장 문자를 넣는다.
         firstParagraph.Text.AddExtendCharForGSO();
 
         // 문단에 사각형 컨트롤 추가한다.
-        _rectangle = (ControlRectangle)firstParagraph.AddNewGsoControl(GsoControlType.Rectangle);
+        _rectangle = (ControlRectangle?)firstParagraph.AddNewGsoControl(GsoControlType.Rectangle);
     }
 
     private void SetCtrlHeaderGso()

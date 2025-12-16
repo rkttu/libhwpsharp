@@ -40,7 +40,9 @@ public class SettingCellTextByFieldTest
         var cellList = CellFinder.FindAll(hwpFile, fieldName);
         foreach (var c in cellList)
         {
-            Paragraph firstPara = c.ParagraphList.GetParagraph(0);
+            Paragraph? firstPara = c.ParagraphList.GetParagraph(0);
+            if (firstPara == null) continue;
+            
             var paraText = firstPara.Text;
             if (paraText == null)
             {
@@ -48,7 +50,7 @@ public class SettingCellTextByFieldTest
                 paraText = firstPara.Text;
             }
 
-            paraText.AddString(fieldText);
+            paraText?.AddString(fieldText);
         }
     }
 }

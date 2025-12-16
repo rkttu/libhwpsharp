@@ -17,17 +17,22 @@ public class MergingCellTest
         var filePath = TestHelper.GetSamplePath("merging-cell.hwp");
         var hwpFile = HWPReader.FromFile(filePath);
         
-        if (hwpFile != null)
+        Assert.IsNotNull(hwpFile);
+        
+        var para = hwpFile.BodyText.SectionList[0].GetParagraph(0);
+        Assert.IsNotNull(para);
+        Assert.IsNotNull(para.ControlList);
+        
+        var control = para.ControlList[2];
+        Assert.IsNotNull(control);
+        
+        if (control.Type == ControlType.Table)
         {
-            var control = hwpFile.BodyText.SectionList[0].GetParagraph(0).ControlList[2];
-            if (control.Type == ControlType.Table)
-            {
-                var table = (ControlTable)control;
-                TableCellMerger.MergeCell(table, 2, 2, 4, 3);
-            }
-            
-            var writePath = TestHelper.GetResultPath("result-merging-cell.hwp");
-            HWPWriter.ToFile(hwpFile, writePath);
+            var table = (ControlTable)control;
+            TableCellMerger.MergeCell(table, 2, 2, 4, 3);
         }
+        
+        var writePath = TestHelper.GetResultPath("result-merging-cell.hwp");
+        HWPWriter.ToFile(hwpFile, writePath);
     }
 }

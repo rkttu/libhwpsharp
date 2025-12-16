@@ -35,8 +35,10 @@ public class ChangingImageTest
     {
         foreach (var ebd in hwpFile.BinData.EmbeddedBinaryDataList)
         {
+            if (ebd.Data == null) continue;
+            
             using var img = LoadImage(ebd.Data);
-            if (img != null)
+            if (img != null && ebd.Name != null)
             {
                 using var grayImg = MakeGray(img);
                 

@@ -31,15 +31,23 @@ public class MakingCaptionTest
         
         // Act
         var para = hwpFile.BodyText.SectionList[0].GetParagraph(0);
-        var ctrlRect = (ControlRectangle)para.ControlList[2];
+        Assert.IsNotNull(para);
+        Assert.IsNotNull(para.ControlList);
+        
+        var ctrlRect = para.ControlList[2] as ControlRectangle;
+        Assert.IsNotNull(ctrlRect);
+        
         var caption = ctrlRect.Caption;
         if (caption == null)
         {
             ctrlRect.CreateCaption();
             caption = ctrlRect.Caption;
         }
-        SetListHeader(caption!.ListHeader);
-        SetPara(caption.ParagraphList.AddNewParagraph(), "이것은 caption 입니다");
+        Assert.IsNotNull(caption);
+        
+        SetListHeader(caption.ListHeader);
+        var newPara = caption.ParagraphList.AddNewParagraph();
+        SetPara(newPara, "이것은 caption 입니다");
         
         var writePath = TestHelper.GetResultPath("result_making_caption.hwp");
         HWPWriter.ToFile(hwpFile, writePath);
@@ -54,8 +62,10 @@ public class MakingCaptionTest
         listHeader.SpaceBetweenCaptionAndFrame = 850;
     }
 
-    private static void SetPara(Paragraph emptyPara, string text)
+    private static void SetPara(Paragraph? emptyPara, string text)
     {
+        if (emptyPara == null) return;
+        
         SetParaHeader(emptyPara);
         SetParaText(emptyPara, text);
         SetParaCharShape(emptyPara);
@@ -82,7 +92,7 @@ public class MakingCaptionTest
     {
         p.CreateText();
         var pt = p.Text;
-        pt.AddString(text);
+        pt?.AddString(text);
     }
 
     private static void SetParaCharShape(Paragraph p)
@@ -90,7 +100,7 @@ public class MakingCaptionTest
         p.CreateCharShape();
 
         var pcs = p.CharShape;
-        pcs.AddParaCharShape(0, 1);
+        pcs?.AddParaCharShape(0, 1);
     }
 
     private static void SetParaLineSeg(Paragraph p)
@@ -98,7 +108,8 @@ public class MakingCaptionTest
         p.CreateLineSeg();
 
         var pls = p.LineSeg;
-        var lsi = pls.AddNewLineSegItem();
+        var lsi = pls?.AddNewLineSegItem();
+        if (lsi == null) return;
 
         lsi.TextStartPosition = 0;
         lsi.LineVerticalPosition = 0;

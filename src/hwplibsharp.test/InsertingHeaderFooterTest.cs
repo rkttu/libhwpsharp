@@ -32,11 +32,15 @@ public class InsertingHeaderFooterTest
         Assert.IsTrue(File.Exists(writePath), "머리글/꼬리글 삽입 성공");
     }
 
-    private static void InsertHeader(Paragraph para)
+    private static void InsertHeader(Paragraph? para)
     {
+        if (para?.Text == null) return;
+        
         para.Text.AddExtendCharForHeader();
 
-        var header = (ControlHeader)para.AddNewControl(ControlType.Header);
+        var header = (ControlHeader?)para.AddNewControl(ControlType.Header);
+        if (header == null) return;
+        
         header.Header.CreateIndex = 1;
         header.Header.ApplyPage = HeaderFooterApplyPage.BothPage;
         header.ListHeader.ParaCount = 1;
@@ -47,16 +51,20 @@ public class InsertingHeaderFooterTest
         paragraph.Header.ParaShapeId = 1;
         paragraph.Header.StyleId = 1;
         paragraph.CreateText();
-        paragraph.Text.AddString("머리글 입니다.");
+        paragraph.Text?.AddString("머리글 입니다.");
         paragraph.CreateCharShape();
-        paragraph.CharShape.AddParaCharShape(0, 2);
+        paragraph.CharShape?.AddParaCharShape(0, 2);
     }
 
-    private static void InsertFooter(Paragraph para)
+    private static void InsertFooter(Paragraph? para)
     {
+        if (para?.Text == null) return;
+        
         para.Text.AddExtendCharForFooter();
 
-        var footer = (ControlFooter)para.AddNewControl(ControlType.Footer);
+        var footer = (ControlFooter?)para.AddNewControl(ControlType.Footer);
+        if (footer == null) return;
+        
         footer.Header.CreateIndex = 1;
         footer.Header.ApplyPage = HeaderFooterApplyPage.BothPage;
         footer.ListHeader.ParaCount = 1;
@@ -67,8 +75,8 @@ public class InsertingHeaderFooterTest
         paragraph.Header.ParaShapeId = 1;
         paragraph.Header.StyleId = 1;
         paragraph.CreateText();
-        paragraph.Text.AddString("꼬리글 입니다.");
+        paragraph.Text?.AddString("꼬리글 입니다.");
         paragraph.CreateCharShape();
-        paragraph.CharShape.AddParaCharShape(0, 2);
+        paragraph.CharShape?.AddParaCharShape(0, 2);
     }
 }
