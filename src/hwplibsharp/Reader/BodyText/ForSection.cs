@@ -1,8 +1,11 @@
 using HwpLib.CompoundFile;
 using HwpLib.Object.BodyText;
 using HwpLib.Object.BodyText.Control;
+using HwpLib.Object.BodyText.Control.CtrlHeader;
+using HwpLib.Object.BodyText.Control.Gso;
 using HwpLib.Object.Etc;
 using HwpLib.Reader.BodyText.Control;
+using HwpLib.Reader.BodyText.Control.Gso;
 using HwpLib.Reader.BodyText.Paragraph;
 using ControlNS = HwpLib.Object.BodyText.Control;
 
@@ -34,6 +37,11 @@ public class ForSection
     private ControlNS.Control? _lastControl;
 
     /// <summary>
+    /// 현재 건너뛰어야 할 레코드 레벨 (-1이면 건너뛰기 모드 아님)
+    /// </summary>
+    private int _skipUntilLevel = -1;
+
+    /// <summary>
     /// 생성자
     /// </summary>
     public ForSection()
@@ -49,11 +57,32 @@ public class ForSection
     {
         _section = section;
         _sr = sr;
+        _skipUntilLevel = -1;
 
         while (!sr.IsEndOfStream())
         {
             if (!sr.ReadRecordHeader())
                 break;
+            
+            var currentLevel = sr.CurrentRecordHeader!.Level;
+            
+            // 건너뛰기 모드인 경우: 현재 레벨이 건너뛰기 시작 레벨보다 높으면 자식 레코드이므로 건너뜀
+            if (_skipUntilLevel >= 0)
+            {
+                if (currentLevel > _skipUntilLevel)
+                {
+                    // 자식 레코드이므로 건너뜀
+                    sr.SkipToEndRecord();
+                    continue;
+                }
+                else
+                {
+                    // 같은 레벨이거나 더 낮은 레벨이면 건너뛰기 모드 종료
+                    // 이 레코드는 정상적으로 처리해야 함
+                    _skipUntilLevel = -1;
+                }
+            }
+            
             ReadRecordBody();
         }
     }
@@ -171,6 +200,9 @@ public class ForSection
             return;
         }
 
+        // 현재 레벨 저장 - 자식 레코드들을 건너뛰기 위함
+        int ctrlLevel = _sr.CurrentRecordHeader!.Level;
+
         // 컨트롤 ID를 읽는다 (4바이트)
         uint ctrlId = _sr.ReadUInt4();
 
@@ -181,13 +213,70 @@ public class ForSection
             ForControlField.ReadCtrlHeader(field, _sr);
             _currentParagraph.AddControl(field);
             _lastControl = field;
+            // 필드 컨트롤의 자식 레코드 건너뛰기
+            _skipUntilLevel = ctrlLevel;
+        }
+        // GSO 컨트롤인 경우
+        else if (ctrlId == ControlType.Gso.GetCtrlId())
+        {
+            ReadGsoControl(ctrlLevel);
+        }
+        // 구역 정의 컨트롤인 경우
+        else if (ctrlId == ControlType.SectionDefine.GetCtrlId())
+        {
+            var sectionDefine = new ControlSectionDefine();
+            // 헤더 읽기는 건너뛰고 컨트롤만 추가
+            _sr.SkipToEndRecord();
+            _currentParagraph.AddControl(sectionDefine);
+            _lastControl = sectionDefine;
+            // 자식 레코드 건너뛰기
+            _skipUntilLevel = ctrlLevel;
+        }
+        // 단 정의 컨트롤인 경우
+        else if (ctrlId == ControlType.ColumnDefine.GetCtrlId())
+        {
+            var columnDefine = new ControlColumnDefine();
+            _sr.SkipToEndRecord();
+            _currentParagraph.AddControl(columnDefine);
+            _lastControl = columnDefine;
+            _skipUntilLevel = ctrlLevel;
         }
         else
         {
             // 다른 종류의 컨트롤은 아직 구현되지 않음
+            // 알 수 없는 컨트롤도 건너뛰되 자식 레코드들도 건너뜀
+            _skipUntilLevel = ctrlLevel;
             _sr.SkipToEndRecord();
             _lastControl = null;
         }
+    }
+
+    /// <summary>
+    /// GSO 컨트롤을 읽는다.
+    /// </summary>
+    private void ReadGsoControl(int gsoLevel)
+    {
+        if (_currentParagraph == null || _sr == null)
+        {
+            _sr!.SkipToEndRecord();
+            return;
+        }
+
+        // GSO 컨트롤 헤더를 읽는다
+        var header = new CtrlHeaderGso();
+        ForCtrlHeaderGso.Read(header, _sr);
+
+        // 남은 레코드 데이터 건너뛰기
+        _sr.SkipToEndRecord();
+
+        // GSO 컨트롤은 하위 레코드에서 gsoId를 읽어서 생성해야 하지만,
+        // 현재는 기본적으로 사각형 컨트롤로 생성
+        var gsoControl = new ControlRectangle(header);
+        _currentParagraph.AddControl(gsoControl);
+        _lastControl = gsoControl;
+
+        // GSO 컨트롤의 자식 레코드들을 건너뛰도록 설정
+        _skipUntilLevel = gsoLevel;
     }
 
     /// <summary>

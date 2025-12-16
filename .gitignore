@@ -412,4 +412,5 @@ $RECYCLE.BIN/
 .nfs*
 
 # HWP test result files
-result-*.hwp
+/sample_hwp/result/
+/sample_hwp/basic/result-setting-필드-누름틀.hwp

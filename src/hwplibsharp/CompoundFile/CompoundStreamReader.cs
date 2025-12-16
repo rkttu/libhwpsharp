@@ -374,6 +374,23 @@ public class CompoundStreamReader : IDisposable
     }
 
     /// <summary>
+    /// 레코드 끝까지 남은 바이트를 읽어서 반환한다.
+    /// </summary>
+    /// <returns>남은 바이트 배열</returns>
+    public byte[] ReadToEndRecord()
+    {
+        if (_header == null)
+            return Array.Empty<byte>();
+
+        long remaining = (_currentPositionAfterHeader + _header.Size) - _readBytes;
+        if (remaining > 0)
+        {
+            return ReadBytes((int)remaining);
+        }
+        return Array.Empty<byte>();
+    }
+
+    /// <summary>
     /// 파일 버전
     /// </summary>
     public FileVersion FileVersion => _fileVersion;
