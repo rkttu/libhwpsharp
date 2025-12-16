@@ -1,12 +1,14 @@
 using HwpLib.CompoundFile;
 using HwpLib.Object.BodyText;
+using HwpLib.Object.BodyText.Control;
 using HwpLib.Object.Etc;
+using HwpLib.Reader.BodyText.Control.Gso;
 using HwpLib.Reader.BodyText.Paragraph;
 
 namespace HwpLib.Reader.BodyText.Control;
 
 /// <summary>
-/// 문단 리스트를 읽는 객체 (캡션, 셀 등에서 사용)
+/// 문단 리스트를 읽는 객체 (캡션, 셀, 머리말/꼬리말, 각주/미주 등에서 사용)
 /// </summary>
 public static class ForParagraphList
 {
@@ -17,84 +19,250 @@ public static class ForParagraphList
     /// <param name="sr">스트림 리더</param>
     public static void Read(IParagraphList pli, CompoundStreamReader sr)
     {
+        var fp = new ForParagraph();
         sr.ReadRecordHeader();
         while (!sr.IsEndOfStream())
         {
-            if (sr.CurrentRecordHeader?.TagId != HWPTag.ParaHeader)
-            {
-                break;
-            }
-
             var para = pli.AddNewParagraph();
-            ReadParagraph(para, sr);
-            
+            fp.Read(para, sr);
             if (para.Header.LastInList)
             {
                 break;
             }
         }
     }
+}
+
+/// <summary>
+/// 하나의 문단을 읽기 위한 객체
+/// </summary>
+public class ForParagraph
+{
+    /// <summary>
+    /// 스트림 리더
+    /// </summary>
+    private CompoundStreamReader? _sr;
 
     /// <summary>
-    /// 문단을 읽는다.
+    /// 문단 헤더의 level
     /// </summary>
-    private static void ReadParagraph(Object.BodyText.Paragraph.Paragraph para, CompoundStreamReader sr)
-    {
-        // 문단 헤더 읽기
-        ForParaHeader.Read(para.Header, sr);
+    private short _paraHeaderLevel;
 
-        // 다음 레코드들을 읽기
+    /// <summary>
+    /// 문단 객체
+    /// </summary>
+    private Object.BodyText.Paragraph.Paragraph? _paragraph;
+
+    /// <summary>
+    /// 생성자
+    /// </summary>
+    public ForParagraph()
+    {
+    }
+
+    /// <summary>
+    /// 하나의 문단을 읽는다.
+    /// </summary>
+    /// <param name="paragraph">문단 객체</param>
+    /// <param name="sr">스트림 리더</param>
+    public void Read(Object.BodyText.Paragraph.Paragraph paragraph, CompoundStreamReader sr)
+    {
+        if (sr.CurrentRecordHeader?.TagId != HWPTag.ParaHeader)
+        {
+            throw new InvalidOperationException("This is not paragraph.");
+        }
+
+        _sr = sr;
+        _paragraph = paragraph;
+        _paraHeaderLevel = (short)sr.CurrentRecordHeader.Level;
+        
+        ParaHeaderBody();
+        ParaText();
+        ParaCharShape();
+        ParaLineSeg();
+        ParaRangeTag();
+
         while (!sr.IsEndOfStream())
         {
-            sr.ReadRecordHeader();
-            if (sr.CurrentRecordHeader == null) break;
-
-            var tagId = sr.CurrentRecordHeader.TagId;
-
-            if (tagId == HWPTag.ParaText)
+            if (!sr.IsImmediatelyAfterReadingHeader)
             {
-                ForParaText.Read(para, sr);
+                sr.ReadRecordHeader();
             }
-            else if (tagId == HWPTag.ParaCharShape)
+            if (IsOutOfParagraph() || IsFollowLastBatangPageInfo() || IsFollowMemo())
             {
-                if (para.CharShape == null) para.CreateCharShape();
-                ForParaCharShape.Read(para.CharShape!, sr);
-            }
-            else if (tagId == HWPTag.ParaLineSeg)
-            {
-                if (para.LineSeg == null) para.CreateLineSeg();
-                ForParaLineSeg.Read(para.LineSeg!, sr);
-            }
-            else if (tagId == HWPTag.ParaRangeTag)
-            {
-                if (para.RangeTag == null) para.CreateRangeTag();
-                ForParaRangeTag.Read(para.RangeTag!, sr);
-            }
-            else if (tagId == HWPTag.ParaHeader)
-            {
-                // 다음 문단이 시작됨 - 중단
                 break;
             }
-            else if (tagId == HWPTag.CtrlHeader)
+            if (sr.CurrentRecordHeader?.TagId == HWPTag.CtrlHeader)
             {
-                // 컨트롤 헤더를 만났을 때 - 셀/캡션 내에서 컨트롤 건너뛰기
-                sr.SkipToEndRecord();
-            }
-            else if (tagId == HWPTag.ListHeader)
-            {
-                // 새로운 ListHeader - 다른 셀이나 캡션의 시작일 수 있음 - 중단
-                break;
-            }
-            else if (tagId == HWPTag.Table)
-            {
-                // 표 정보 레코드 - 상위에서 처리해야 함 - 중단
-                break;
+                Control();
             }
             else
             {
-                // 기타 레코드는 건너뛰고 계속 읽기
-                sr.SkipToEndRecord();
+                SkipETCRecord();
             }
         }
+    }
+
+    /// <summary>
+    /// 문단 헤더 레코드를 읽는다.
+    /// </summary>
+    private void ParaHeaderBody()
+    {
+        ForParaHeader.Read(_paragraph!.Header, _sr!);
+    }
+
+    /// <summary>
+    /// 문단의 텍스트 레코드를 읽는다.
+    /// </summary>
+    private void ParaText()
+    {
+        if (_sr!.IsEndOfStream()) return;
+
+        if (!_sr.IsImmediatelyAfterReadingHeader)
+        {
+            _sr.ReadRecordHeader();
+        }
+        if (_sr.CurrentRecordHeader?.TagId == HWPTag.ParaText)
+        {
+            ForParaText.Read(_paragraph!, _sr);
+        }
+    }
+
+    /// <summary>
+    /// 문단의 문자 모양 레코드를 읽는다.
+    /// </summary>
+    private void ParaCharShape()
+    {
+        if (_sr!.IsEndOfStream()) return;
+
+        if (!_sr.IsImmediatelyAfterReadingHeader)
+        {
+            _sr.ReadRecordHeader();
+        }
+        if (_sr.CurrentRecordHeader?.TagId == HWPTag.ParaCharShape)
+        {
+            if (_paragraph!.CharShape == null) _paragraph.CreateCharShape();
+            ForParaCharShape.Read(_paragraph.CharShape!, _sr);
+        }
+    }
+
+    /// <summary>
+    /// 문단의 레이아웃 레코드를 읽는다.
+    /// </summary>
+    private void ParaLineSeg()
+    {
+        if (_sr!.IsEndOfStream()) return;
+
+        if (!_sr.IsImmediatelyAfterReadingHeader)
+        {
+            _sr.ReadRecordHeader();
+        }
+        if (_sr.CurrentRecordHeader?.TagId == HWPTag.ParaLineSeg)
+        {
+            if (_paragraph!.LineSeg == null) _paragraph.CreateLineSeg();
+            ForParaLineSeg.Read(_paragraph.LineSeg!, _sr);
+        }
+    }
+
+    /// <summary>
+    /// 문단의 영역 태그 레코드를 읽는다.
+    /// </summary>
+    private void ParaRangeTag()
+    {
+        if (_sr!.IsEndOfStream()) return;
+
+        if (!_sr.IsImmediatelyAfterReadingHeader)
+        {
+            _sr.ReadRecordHeader();
+        }
+        if (_sr.CurrentRecordHeader?.TagId == HWPTag.ParaRangeTag)
+        {
+            if (_paragraph!.RangeTag == null) _paragraph.CreateRangeTag();
+            ForParaRangeTag.Read(_paragraph.RangeTag!, _sr);
+        }
+    }
+
+    /// <summary>
+    /// 읽은 레코드 헤더가 문단 바깥쪽인지 여부를 반환한다.
+    /// </summary>
+    private bool IsOutOfParagraph()
+    {
+        return _paraHeaderLevel >= _sr!.CurrentRecordHeader!.Level;
+    }
+
+    /// <summary>
+    /// 마지막 바탕쪽 정보가 뒤에 붙어 있는지 여부를 반환한다.
+    /// </summary>
+    private bool IsFollowLastBatangPageInfo()
+    {
+        return _paraHeaderLevel == 0
+            && _sr!.CurrentRecordHeader?.TagId == HWPTag.ListHeader
+            && _sr.CurrentRecordHeader.Level == 1;
+    }
+
+    /// <summary>
+    /// 메모 정보가 뒤에 붙어 있는지 여부를 반환한다.
+    /// </summary>
+    private bool IsFollowMemo()
+    {
+        return _paraHeaderLevel == 0
+            && _sr!.CurrentRecordHeader?.TagId == HWPTag.MemoList
+            && _sr.CurrentRecordHeader.Level == 1;
+    }
+
+    /// <summary>
+    /// 문단에 포함된 컨트롤을 읽는다.
+    /// </summary>
+    private void Control()
+    {
+        uint id = _sr!.ReadUInt4();
+        
+        // Gso 컨트롤인 경우 - 임시로 스킵
+        if (id == ControlType.Gso.GetCtrlId())
+        {
+            SkipControlWithSubRecords();
+            return;
+        }
+        
+        // Form 컨트롤인 경우 (아직 구현되지 않음)
+        if (id == ControlType.Form.GetCtrlId())
+        {
+            SkipControlWithSubRecords();
+            return;
+        }
+        
+        // 다른 컨트롤은 ForControl을 통해 읽는다
+        var c = _paragraph!.AddNewControl(id);
+        ForControl.Read(c, _sr);
+    }
+
+    /// <summary>
+    /// 하위 레코드를 가진 컨트롤을 건너뛴다.
+    /// </summary>
+    private void SkipControlWithSubRecords()
+    {
+        var ctrlHeaderLevel = _sr!.CurrentRecordHeader!.Level;
+        _sr.SkipToEndRecord();
+
+        while (!_sr.IsEndOfStream())
+        {
+            if (!_sr.IsImmediatelyAfterReadingHeader)
+            {
+                _sr.ReadRecordHeader();
+            }
+            if (ctrlHeaderLevel >= _sr.CurrentRecordHeader!.Level)
+            {
+                break;
+            }
+            _sr.SkipToEndRecord();
+        }
+    }
+
+    /// <summary>
+    /// 기타 레코드를 스킵한다.
+    /// </summary>
+    private void SkipETCRecord()
+    {
+        _sr!.SkipToEndRecord();
     }
 }

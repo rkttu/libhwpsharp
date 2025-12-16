@@ -3,6 +3,7 @@ using HwpLib.Object.BodyText;
 using HwpLib.Object.BodyText.Control;
 using HwpLib.Object.Etc;
 using HwpLib.Reader.BodyText.Control;
+using HwpLib.Reader.BodyText.Control.Gso;
 using HwpLib.Reader.BodyText.Paragraph;
 using ControlNS = HwpLib.Object.BodyText.Control;
 
@@ -194,6 +195,27 @@ public class ForSection
             _currentParagraph.AddControl(table);
             _lastControl = table;
         }
+        // 수식 컨트롤인 경우
+        else if (ctrlId == ControlType.Equation.GetCtrlId())
+        {
+            var eqed = new ControlEquation();
+            var fce = new ForControlEquation();
+            fce.Read(eqed, _sr);
+            _currentParagraph.AddControl(eqed);
+            _lastControl = eqed;
+        }
+        // Gso 컨트롤인 경우 - 임시로 스킵
+        else if (ctrlId == ControlType.Gso.GetCtrlId())
+        {
+            SkipControlWithSubRecords();
+            _lastControl = null;
+        }
+        // Form 컨트롤인 경우 (아직 구현되지 않음 - 스킵)
+        else if (ctrlId == ControlType.Form.GetCtrlId())
+        {
+            SkipControlWithSubRecords();
+            _lastControl = null;
+        }
         // 구역 정의 컨트롤인 경우
         else if (ctrlId == ControlType.SectionDefine.GetCtrlId())
         {
@@ -211,11 +233,151 @@ public class ForSection
             _currentParagraph.AddControl(cold);
             _lastControl = cold;
         }
+        // 머리말 컨트롤인 경우
+        else if (ctrlId == ControlType.Header.GetCtrlId())
+        {
+            var head = new ControlHeader();
+            var fch = new ForControlHeader();
+            fch.Read(head, _sr);
+            _currentParagraph.AddControl(head);
+            _lastControl = head;
+        }
+        // 꼬리말 컨트롤인 경우
+        else if (ctrlId == ControlType.Footer.GetCtrlId())
+        {
+            var foot = new ControlFooter();
+            var fcf = new ForControlFooter();
+            fcf.Read(foot, _sr);
+            _currentParagraph.AddControl(foot);
+            _lastControl = foot;
+        }
+        // 각주 컨트롤인 경우
+        else if (ctrlId == ControlType.Footnote.GetCtrlId())
+        {
+            var fn = new ControlFootnote();
+            var fcfn = new ForControlFootnote();
+            fcfn.Read(fn, _sr);
+            _currentParagraph.AddControl(fn);
+            _lastControl = fn;
+        }
+        // 미주 컨트롤인 경우
+        else if (ctrlId == ControlType.Endnote.GetCtrlId())
+        {
+            var en = new ControlEndnote();
+            var fcen = new ForControlEndnote();
+            fcen.Read(en, _sr);
+            _currentParagraph.AddControl(en);
+            _lastControl = en;
+        }
+        // 자동 번호 컨트롤인 경우
+        else if (ctrlId == ControlType.AutoNumber.GetCtrlId())
+        {
+            var an = new ControlAutoNumber();
+            ForControlAutoNumber.Read(an, _sr);
+            _currentParagraph.AddControl(an);
+            _lastControl = an;
+        }
+        // 새 번호 지정 컨트롤인 경우
+        else if (ctrlId == ControlType.NewNumber.GetCtrlId())
+        {
+            var nwno = new ControlNewNumber();
+            ForControlNewNumber.Read(nwno, _sr);
+            _currentParagraph.AddControl(nwno);
+            _lastControl = nwno;
+        }
+        // 감추기 컨트롤인 경우
+        else if (ctrlId == ControlType.PageHide.GetCtrlId())
+        {
+            var pghd = new ControlPageHide();
+            ForControlPageHide.Read(pghd, _sr);
+            _currentParagraph.AddControl(pghd);
+            _lastControl = pghd;
+        }
+        // 홀/짝수 조정 컨트롤인 경우
+        else if (ctrlId == ControlType.PageOddEvenAdjust.GetCtrlId())
+        {
+            var pgoea = new ControlPageOddEvenAdjust();
+            ForControlPageOddEvenAdjust.Read(pgoea, _sr);
+            _currentParagraph.AddControl(pgoea);
+            _lastControl = pgoea;
+        }
+        // 쪽 번호 위치 컨트롤인 경우
+        else if (ctrlId == ControlType.PageNumberPosition.GetCtrlId())
+        {
+            var pgnp = new ControlPageNumberPosition();
+            ForControlPageNumberPosition.Read(pgnp, _sr);
+            _currentParagraph.AddControl(pgnp);
+            _lastControl = pgnp;
+        }
+        // 찾아보기 표식 컨트롤인 경우
+        else if (ctrlId == ControlType.IndexMark.GetCtrlId())
+        {
+            var idxm = new ControlIndexMark();
+            ForControlIndexMark.Read(idxm, _sr);
+            _currentParagraph.AddControl(idxm);
+            _lastControl = idxm;
+        }
+        // 책갈피 컨트롤인 경우
+        else if (ctrlId == ControlType.Bookmark.GetCtrlId())
+        {
+            var bkmk = new ControlBookmark();
+            ForControlBookmark.Read(bkmk, _sr);
+            _currentParagraph.AddControl(bkmk);
+            _lastControl = bkmk;
+        }
+        // 글자 겹침 컨트롤인 경우
+        else if (ctrlId == ControlType.OverlappingLetter.GetCtrlId())
+        {
+            var tcps = new ControlOverlappingLetter();
+            ForControlOverlappingLetter.Read(tcps, _sr);
+            _currentParagraph.AddControl(tcps);
+            _lastControl = tcps;
+        }
+        // 덧말 컨트롤인 경우
+        else if (ctrlId == ControlType.AdditionalText.GetCtrlId())
+        {
+            var at = new ControlAdditionalText();
+            ForControlAdditionalText.Read(at, _sr);
+            _currentParagraph.AddControl(at);
+            _lastControl = at;
+        }
+        // 숨은 설명 컨트롤인 경우
+        else if (ctrlId == ControlType.HiddenComment.GetCtrlId())
+        {
+            var tcmt = new ControlHiddenComment();
+            var fchc = new ForControlHiddenComment();
+            fchc.Read(tcmt, _sr);
+            _currentParagraph.AddControl(tcmt);
+            _lastControl = tcmt;
+        }
         else
         {
             // 다른 종류의 컨트롤은 아직 구현되지 않음
             _sr.SkipToEndRecord();
             _lastControl = null;
+        }
+    }
+
+    /// <summary>
+    /// 하위 레코드를 가진 컨트롤을 건너뛴다.
+    /// </summary>
+    private void SkipControlWithSubRecords()
+    {
+        var ctrlHeaderLevel = _sr!.CurrentRecordHeader!.Level;
+        _sr.SkipToEndRecord();
+
+        while (!_sr.IsEndOfStream())
+        {
+            if (!_sr.IsImmediatelyAfterReadingHeader)
+            {
+                if (!_sr.ReadRecordHeader())
+                    break;
+            }
+            if (ctrlHeaderLevel >= _sr.CurrentRecordHeader!.Level)
+            {
+                break;
+            }
+            _sr.SkipToEndRecord();
         }
     }
 
