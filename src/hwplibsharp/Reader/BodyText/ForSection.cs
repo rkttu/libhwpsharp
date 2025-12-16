@@ -52,8 +52,11 @@ public class ForSection
 
         while (!sr.IsEndOfStream())
         {
-            if (!sr.ReadRecordHeader())
-                break;
+            if (!sr.IsImmediatelyAfterReadingHeader)
+            {
+                if (!sr.ReadRecordHeader())
+                    break;
+            }
             ReadRecordBody();
         }
     }
@@ -190,6 +193,23 @@ public class ForSection
             fct.Read(table, _sr);
             _currentParagraph.AddControl(table);
             _lastControl = table;
+        }
+        // 구역 정의 컨트롤인 경우
+        else if (ctrlId == ControlType.SectionDefine.GetCtrlId())
+        {
+            var secd = new ControlSectionDefine();
+            var fcsd = new ForControlSectionDefine();
+            fcsd.Read(secd, _sr);
+            _currentParagraph.AddControl(secd);
+            _lastControl = secd;
+        }
+        // 단 정의 컨트롤인 경우
+        else if (ctrlId == ControlType.ColumnDefine.GetCtrlId())
+        {
+            var cold = new ControlColumnDefine();
+            ForControlColumnDefine.Read(cold, _sr);
+            _currentParagraph.AddControl(cold);
+            _lastControl = cold;
         }
         else
         {
