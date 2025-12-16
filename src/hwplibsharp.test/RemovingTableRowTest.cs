@@ -9,13 +9,12 @@ using HwpLib.Writer;
 namespace HwpLibSharp.Test;
 
 /// <summary>
-/// 표의 열을 삭제하는 테스트
+/// 표의 행을 삭제하는 테스트
 /// </summary>
 [TestClass]
 public class RemovingTableRowTest
 {
     [TestMethod]
-    [Ignore("IReadOnlyList에서 RemoveAt을 직접 호출할 수 없음 - 라이브러리에 RemoveRow 메서드 추가 필요")]
     public void RemoveTableRow_ShouldSucceed()
     {
         // Arrange
@@ -42,10 +41,7 @@ public class RemovingTableRowTest
 
     private static void RemoveSecondRowObject(ControlTable table)
     {
-        // TODO: 라이브러리에 RemoveRow(int index) 메서드 추가 필요
-        // table.RowList는 IReadOnlyList이므로 RemoveAt 직접 호출 불가
-        // 우회 방법: internal List에 접근하거나 새 메서드 추가 필요
-        // table.RowList.RemoveAt(1);
+        table.RemoveRow(1);
     }
 
     private static void AdjustTableRowCount(ControlTable table)
@@ -55,9 +51,7 @@ public class RemovingTableRowTest
 
     private static void RemoveCellCountOfRow(ControlTable table)
     {
-        // TODO: 라이브러리에 RemoveCellCountOfRow(int index) 메서드 추가 필요
-        // table.Table.CellCountOfRowList는 IReadOnlyList이므로 RemoveAt 직접 호출 불가
-        // table.Table.CellCountOfRowList.RemoveAt(1);
+        table.Table.RemoveCellCountOfRow(1);
     }
 
     private static void AdjustCellRowIndex(ControlTable table)

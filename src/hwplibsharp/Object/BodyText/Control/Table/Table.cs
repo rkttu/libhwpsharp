@@ -148,6 +148,15 @@ public class Table
     }
 
     /// <summary>
+    /// 행의 셀 개수를 삭제한다.
+    /// </summary>
+    /// <param name="index">삭제할 인덱스</param>
+    public void RemoveCellCountOfRow(int index)
+    {
+        _cellCountOfRowList.RemoveAt(index);
+    }
+
+    /// <summary>
     /// 행의 셀 개수 리스트를 지운다.
     /// </summary>
     public void ClearCellCountOfRowList()

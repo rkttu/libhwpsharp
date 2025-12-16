@@ -93,6 +93,15 @@ public class ControlTable : Control
     public IReadOnlyList<Row> RowList => _rowList;
 
     /// <summary>
+    /// 지정된 인덱스의 행을 삭제한다.
+    /// </summary>
+    /// <param name="index">삭제할 행의 인덱스</param>
+    public void RemoveRow(int index)
+    {
+        _rowList.RemoveAt(index);
+    }
+
+    /// <summary>
     /// 객체를 복제한다.
     /// </summary>
     /// <returns>복제된 객체</returns>
