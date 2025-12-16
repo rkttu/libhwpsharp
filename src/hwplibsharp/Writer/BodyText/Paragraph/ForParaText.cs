@@ -39,7 +39,12 @@ public static class ForParaText
                 return true;
             }
 
-            if (paraText.CharList.Count <= 1)
+            if (paraText.CharList.Count == 0)
+            {
+                return true;
+            }
+
+            if (paraText.CharList.Count == 1)
             {
                 var hwpChar = paraText.CharList[0];
                 if (hwpChar.Code == 0x0d)
