@@ -176,8 +176,7 @@ public class HWPReader : IDisposable
         using var sr = _cfr!.GetChildStreamReader(sectionName, IsCompressed(), GetVersion());
         
         // Section 스트림 읽기
-        // TODO: 전체 Section 읽기 로직 구현 필요 (ForSection.Read 등)
-        // 현재는 빈 Section만 생성
+        new BodyText.ForSection().Read(section, sr);
     }
 
     /// <summary>
