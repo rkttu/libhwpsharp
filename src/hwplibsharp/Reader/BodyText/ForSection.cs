@@ -204,13 +204,24 @@ public class ForSection
             _currentParagraph.AddControl(eqed);
             _lastControl = eqed;
         }
-        // Gso 컨트롤인 경우 - 임시로 스킵
+        // Gso 컨트롤인 경우
         else if (ctrlId == ControlType.Gso.GetCtrlId())
         {
-            SkipControlWithSubRecords();
-            _lastControl = null;
+            var fgc = new ForGsoControl();
+            fgc.Read(_currentParagraph, _sr);
+            // ForGsoControl.Read() 메서드 내부에서 _currentParagraph.AddNewGsoControl()을 호출하여
+            // 컨트롤을 추가하므로 여기서는 별도로 AddControl()을 호출하지 않습니다.
+            // ControlList의 마지막 항목을 _lastControl로 설정합니다.
+            if (_currentParagraph.ControlList != null && _currentParagraph.ControlList.Count > 0)
+            {
+                _lastControl = _currentParagraph.ControlList[^1];
+            }
+            else
+            {
+                _lastControl = null;
+            }
         }
-        // Form 컨트롤인 경우 (아직 구현되지 않음 - 스킵)
+        // Form 컨트롤인 경우 (아직 지원되지 않음 - 스킵)
         else if (ctrlId == ControlType.Form.GetCtrlId())
         {
             SkipControlWithSubRecords();
