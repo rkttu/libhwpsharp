@@ -1,4 +1,4 @@
-# libhwpsharp
+# HwpLibSharp
 
 [![NuGet](https://img.shields.io/nuget/v/HwpLibSharp.svg)](https://www.nuget.org/packages/HwpLibSharp/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/HwpLibSharp.svg)](https://www.nuget.org/packages/HwpLibSharp/)
