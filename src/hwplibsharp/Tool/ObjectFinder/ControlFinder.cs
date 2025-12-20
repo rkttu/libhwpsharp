@@ -60,7 +60,7 @@ public class ControlFinder
     /// <returns>조건에 맞는 컨트롤 리스트</returns>
     private List<Control> Go(HWPFile hwpFile, IControlFilter filter)
     {
-        _resultList = [];
+        _resultList = new List<Control>();
         _filter = filter;
 
         foreach (var s in hwpFile.BodyText.SectionList)

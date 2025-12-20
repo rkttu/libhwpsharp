@@ -29,7 +29,7 @@ public class CellFinder
     /// <param name="fieldName">필드명</param>
     private CellFinder(string fieldName)
     {
-        _cellList = [];
+        _cellList = new List<Cell>();
         _fieldName = fieldName;
     }
 

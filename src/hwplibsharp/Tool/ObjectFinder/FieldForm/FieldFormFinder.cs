@@ -192,8 +192,8 @@ public static class FieldFormFinder
 
         public Result()
         {
-            _fieldDataList = [];
-            _formDataList = [];
+            _fieldDataList = new List<FieldData>();
+            _formDataList = new List<FormData>();
             Added = false;
         }
 
