@@ -5,8 +5,9 @@ on:
     types: [ published ]
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+  test:
+    # Windows runner is required for .NET Framework 4.7.2 target
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
@@ -27,6 +28,27 @@ jobs:
 
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
+      working-directory: src
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+      working-directory: src
+
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
       working-directory: src
 
     - name: Pack

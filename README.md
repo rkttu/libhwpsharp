@@ -17,9 +17,25 @@
 
 ## 기술적 특징
 
-- **.NET 8.0 타겟**: 최신 .NET 8.0을 대상으로 빌드되었습니다.
+- **다중 프레임워크 지원**: .NET Standard 2.0과 .NET Framework 4.7.2를 동시에 타겟으로 빌드됩니다.
 - **OpenMcdf 사용**: 원본 Java 프로젝트에서 사용하던 Apache POI 대신, .NET 네이티브 라이브러리인 [OpenMcdf](https://github.com/ironfede/openmcdf)를 사용하여 OLE 복합 문서를 처리합니다.
-- **AOT 빌드 지원**: Native AOT(Ahead-of-Time) 컴파일을 지원하도록 설계되어, 더 빠른 시작 시간과 낮은 메모리 사용량을 제공합니다.
+- **Nullable 참조 형식 지원**: C# 8.0의 Nullable 참조 형식을 지원하여, null 관련 버그를 컴파일 타임에 방지할 수 있습니다.
+
+## 시스템 요구 사항
+
+이 라이브러리는 다음 런타임 환경에서 사용할 수 있습니다:
+
+| 플랫폼 | 최소 버전 | 비고 |
+|--------|-----------|------|
+| .NET Framework | 4.7.2 | Windows 전용 |
+| .NET Core | 2.0 | 크로스 플랫폼 |
+| .NET | 5.0+ | 크로스 플랫폼 |
+| Mono | 5.4 | 크로스 플랫폼 |
+| Xamarin.iOS | 10.14 | iOS |
+| Xamarin.Android | 8.0 | Android |
+| Unity | 2018.1 | 게임 엔진 |
+
+> ⚠️ **.NET Framework 4.6.1 ~ 4.7.1**: .NET Standard 2.0 호환 모드로 동작하지만, 일부 기능이 제한될 수 있습니다. 가능하면 .NET Framework 4.7.2 이상으로 업그레이드하는 것을 권장합니다.
 
 ## 원본 프로젝트
 

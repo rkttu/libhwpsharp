@@ -1,10 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<ImplicitUsings>disable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+		<TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
 		<LangVersion>8.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>disable</ImplicitUsings>
+
+		<!-- Platform Configuration -->
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<Prefer32Bit>false</Prefer32Bit>
 
 		<!-- Version Information -->
 		<Version>1.1.7-preview.1</Version>
@@ -14,7 +18,7 @@
 		<!-- Package Metadata -->
 		<PackageId>HwpLibSharp</PackageId>
 		<Title>HwpLibSharp</Title>
-		<Description>A .NET library for reading and writing HWP (Hangul Word Processor) files. AI-assisted translation from the original Java hwplib library by neolord0.</Description>
+		<Description>A .NET library for reading and writing HWP (Hangul Word Processor) files. AI-assisted translation from the original Java hwplib library by neolord0. Requires .NET Framework 4.7.2+ or .NET Standard 2.0 compatible runtime.</Description>
 		<Authors>neolord0;rkttu</Authors>
 		<Copyright>Copyright (c) neolord0. All rights reserved. .NET port by rkttu with AI-assisted translation.</Copyright>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -31,6 +35,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="OpenMcdf" Version="3.1.0" />
+	</ItemGroup>
+
+	<!-- .NET Framework 4.7.2 specific references -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+		<Reference Include="System.Net.Http" />
 	</ItemGroup>
 
 </Project>
